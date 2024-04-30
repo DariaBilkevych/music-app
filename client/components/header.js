@@ -2,9 +2,9 @@ import Link from 'next/link';
 
 export default ({ currentUser }) => {
   const links = [
-    !currentUser && { label: 'Sign Up', href: '/auth/signup' },
-    !currentUser && { label: 'Sign In', href: '/auth/signin' },
-    currentUser && { label: 'Sign Out', href: '/auth/signout' },
+    !currentUser && { label: 'Реєстрація', href: '/auth/signup' },
+    !currentUser && { label: 'Авторизація', href: '/auth/signin' },
+    currentUser && { label: 'Вихід', href: '/auth/signout' },
   ]
     .filter((linkConfig) => linkConfig)
     .map(({ label, href }) => {
@@ -20,7 +20,7 @@ export default ({ currentUser }) => {
   return (
     <nav className="navbar navbar-light bg-light">
       <Link className="navbar-brand" href="/">
-        MusicApp
+        Стимінг
       </Link>
 
       <div className="d-flex justify-content-end">

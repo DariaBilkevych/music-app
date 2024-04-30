@@ -7,12 +7,12 @@ export default () => {
     url: '/api/users/signout',
     method: 'post',
     body: {},
-    onSuccess: () => Router.push('/')
+    onSuccess: () => Router.push('/'),
   });
 
   useEffect(() => {
     doRequest();
   }, []);
 
-  return <div>Signing you out...</div>;
+  return <div>Вихід з Вашого акаунту...</div>;
 };

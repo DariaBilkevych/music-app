@@ -10,39 +10,47 @@ export default () => {
     method: 'post',
     body: {
       email,
-      password
+      password,
     },
-    onSuccess: () => Router.push('/')
+    onSuccess: () => Router.push('/'),
   });
 
-  const onSubmit = async event => {
+  const onSubmit = async (event) => {
     event.preventDefault();
 
     await doRequest();
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <h1>Sign In</h1>
-      <div className="form-group">
-        <label>Email Address</label>
-        <input
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          className="form-control"
-        />
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <form onSubmit={onSubmit}>
+            <h1 className="mb-4">Авторизація</h1>
+            <div className="form-group">
+              <label>Електронна пошта</label>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="form-control"
+              />
+            </div>
+            <div className="form-group">
+              <label>Пароль</label>
+              <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                className="form-control"
+              />
+            </div>
+            {errors && <div className="alert alert-danger">{errors}</div>}
+            <button type="submit" className="btn btn-primary">
+              Авторизуватись
+            </button>
+          </form>
+        </div>
       </div>
-      <div className="form-group">
-        <label>Password</label>
-        <input
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          type="password"
-          className="form-control"
-        />
-      </div>
-      {errors}
-      <button className="btn btn-primary">Sign In</button>
-    </form>
+    </div>
   );
 };

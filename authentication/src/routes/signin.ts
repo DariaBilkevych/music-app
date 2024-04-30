@@ -23,7 +23,9 @@ router.post(
 
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
-      throw new BadRequestError('Invalid credentials');
+      throw new BadRequestError(
+        'Invalid credentials. This user does not exist!'
+      );
     }
 
     const passwordsMatch = await Password.compare(
