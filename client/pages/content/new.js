@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
 import axios from 'axios';
 import Router from 'next/router';
+import useRequest from '../../hooks/use-request';
 
 const NewAudioFile = () => {
   const [song, setSong] = useState({
@@ -16,13 +17,46 @@ const NewAudioFile = () => {
   const fileTypes = ['MP3'];
   const handleChange = (file) => {
     setSong({ ...song, file: file });
-    console.log(file);
+  };
+
+  const { doRequest, errors } = useRequest({
+    url: '/api/content',
+    method: 'post',
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append('title', song.title);
+    formData.append('artist', song.artist);
+    formData.append('album', song.album);
+    formData.append('year', song.year);
+    formData.append('duration', song.duration);
+
+    if (song.file) {
+      formData.append('file', song.file);
+    }
+
+    try {
+      const response = await axios.post('/api/content', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('Song upload successful:', response.data);
+      Router.push('/');
+    } catch (error) {
+      console.error('Error uploading song:', error);
+    }
   };
 
   return (
     <div>
       <h1>Завантаження власного файлу</h1>
-      <form>
+      <form onSubmit={onSubmit}>
         <div className="form-group">
           <label>Назва</label>
           <input
@@ -68,6 +102,7 @@ const NewAudioFile = () => {
           name="file"
           types={fileTypes}
         />
+        {errors && <div className="alert alert-danger">{errors}</div>}
         <button className="btn btn-primary">Завантажити</button>
       </form>
     </div>

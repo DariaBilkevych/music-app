@@ -16,7 +16,7 @@ app.use(
     secure: process.env.NODE_ENV !== 'test',
   })
 );
-// app.use(currentUser);
+app.use(currentUser);
 
 app.use(uploadContentRouter);
 app.use(indexContentRouter);

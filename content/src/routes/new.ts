@@ -24,6 +24,7 @@ const upload = multer({ storage });
 
 router.post(
   '/api/content',
+  requireAuth,
   upload.single('file'),
   async (req: Request, res: Response) => {
     try {

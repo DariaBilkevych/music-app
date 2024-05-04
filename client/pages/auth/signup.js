@@ -23,7 +23,7 @@ export default () => {
 
   return (
     <form onSubmit={onSubmit}>
-      <h1>Авторизація</h1>
+      <h1>Реєстрація</h1>
       <div className="form-group">
         <label>Електронна пошта</label>
         <input
@@ -42,7 +42,7 @@ export default () => {
         />
       </div>
       {errors}
-      <button className="btn btn-primary">Авторизуватись</button>
+      <button className="btn btn-primary">Зареєструватись</button>
     </form>
   );
 };
