@@ -4,6 +4,8 @@ import multer from 'multer';
 import { cloudinary } from '../cloudinary';
 import { AudioFile } from '../models/audio-file';
 import fs from 'fs';
+import { ContentCreatedPublisher } from '../events/publishers/content-created-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -54,10 +56,22 @@ router.post(
                 year,
                 duration,
                 src: result.url,
+                userId: req.currentUser!.id,
               });
 
             if (audioFile) {
               await audioFile.save();
+              await new ContentCreatedPublisher(natsWrapper.client).publish({
+                id: audioFile.id,
+                title: audioFile.title,
+                artist: audioFile.artist,
+                album: audioFile.album,
+                year: audioFile.year,
+                duration: audioFile.duration,
+                src: audioFile.src,
+                userId: audioFile.userId,
+              });
+
               res.status(201).send(audioFile);
             } else {
               res.status(500).json({ message: 'Result is undefined' });

@@ -8,6 +8,7 @@ interface AudioFileAttrs {
   year: number;
   duration: number;
   src: string;
+  userId: string;
 }
 
 interface AudioFileDoc extends mongoose.Document {
@@ -17,6 +18,7 @@ interface AudioFileDoc extends mongoose.Document {
   year: number;
   duration: number;
   src: string;
+  userId: string;
 }
 
 interface AudioFileModel extends mongoose.Model<AudioFileDoc> {
@@ -46,6 +48,10 @@ const audiFileSchema = new mongoose.Schema(
       required: true,
     },
     src: {
+      type: String,
+      required: true,
+    },
+    userId: {
       type: String,
       required: true,
     },
