@@ -1,24 +1,22 @@
 import mongoose from 'mongoose';
-import { transform } from 'typescript';
 
 interface AudioFileAttrs {
+  id: string;
   title: string;
   artist: string;
   album: string;
   year: number;
   duration: number;
   src: string;
-  userId: string;
 }
 
-interface AudioFileDoc extends mongoose.Document {
+export interface AudioFileDoc extends mongoose.Document {
   title: string;
   artist: string;
   album: string;
   year: number;
   duration: number;
   src: string;
-  userId: string;
 }
 
 interface AudioFileModel extends mongoose.Model<AudioFileDoc> {
@@ -51,10 +49,6 @@ const audioFileSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    userId: {
-      type: String,
-      required: true,
-    },
   },
   {
     toJSON: {
@@ -66,8 +60,16 @@ const audioFileSchema = new mongoose.Schema(
   }
 );
 
-audioFileSchema.statics.build = (attr: AudioFileAttrs) => {
-  return new AudioFile(attr);
+audioFileSchema.statics.build = (attrs: AudioFileAttrs) => {
+  return new AudioFile({
+    _id: attrs.id,
+    title: attrs.title,
+    artist: attrs.artist,
+    album: attrs.album,
+    year: attrs.year,
+    duration: attrs.duration,
+    src: attrs.src,
+  });
 };
 
 const AudioFile = mongoose.model<AudioFileDoc, AudioFileModel>(

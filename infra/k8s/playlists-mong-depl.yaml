@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playlists-mongo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: playlists-mongo
+  template:
+    metadata:
+      labels:
+        app: playlists-mongo
+    spec:
+      containers:
+        - name: playlists-mongo
+          image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: playlists-mongo-srv
+spec:
+  selector:
+    app: playlists-mongo
+  ports:
+    - name: db
+      protocol: TCP
+      port: 27017
+      targetPort: 27017

@@ -25,6 +25,13 @@ spec:
                 name: content-srv
                 port:
                   number: 3000
+          - path: /api/playlists/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: playlists-srv
+                port:
+                  number: 3000
           - path: /?(.*)
             pathType: ImplementationSpecific
             backend:

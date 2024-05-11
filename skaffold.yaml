@@ -32,3 +32,11 @@ build:
         manual:
           - src: 'src/**/*.ts'
             dest: .
+    - image: dariabilkevych/playlists
+      context: playlists
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.ts'
+            dest: .
