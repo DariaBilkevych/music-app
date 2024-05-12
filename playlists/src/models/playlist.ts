@@ -15,7 +15,7 @@ interface PlaylistDoc extends mongoose.Document {
 }
 
 interface PlaylistModel extends mongoose.Model<PlaylistDoc> {
-  build(attr: PlaylistAttrs): PlaylistDoc;
+  build(attrs: PlaylistAttrs): PlaylistDoc;
 }
 
 const playlistSchema = new mongoose.Schema(

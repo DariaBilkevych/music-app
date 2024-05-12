@@ -8,7 +8,11 @@ export class ContentUpdatedListener extends Listener<ContentUpdatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: ContentUpdatedEvent['data'], msg: Message) {
-    const audioFile = await AudioFile.findById(data.id);
+    const audioFile = await AudioFile.findByIdAndUpdate(
+      data.id,
+      { $set: data },
+      { new: true, runValidators: true } // Return the updated document
+    );
 
     if (!audioFile) {
       throw new Error('Audiofile not found!');

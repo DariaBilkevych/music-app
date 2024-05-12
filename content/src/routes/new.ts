@@ -70,6 +70,7 @@ router.post(
                 duration: audioFile.duration,
                 src: audioFile.src,
                 userId: audioFile.userId,
+                version: audioFile.version,
               });
 
               res.status(201).send(audioFile);

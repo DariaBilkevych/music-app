@@ -47,11 +47,8 @@ router.put(
 
       const audioFile = await AudioFile.findByIdAndUpdate(
         req.params.id,
-        req.body,
-        {
-          ...req.body,
-          new: true,
-        }
+        { $inc: { version: 1 }, $set: req.body },
+        { new: true, runValidators: true }
       );
 
       if (!audioFile) {
@@ -67,6 +64,7 @@ router.put(
         duration: audioFile.duration,
         src: audioFile.src,
         userId: audioFile.userId,
+        version: audioFile.version,
       });
 
       res.status(200).send(audioFile);

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { transform } from 'typescript';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 
 interface AudioFileAttrs {
   title: string;
@@ -19,10 +19,11 @@ interface AudioFileDoc extends mongoose.Document {
   duration: number;
   src: string;
   userId: string;
+  version: number;
 }
 
 interface AudioFileModel extends mongoose.Model<AudioFileDoc> {
-  build(attr: AudioFileAttrs): AudioFileDoc;
+  build(attrs: AudioFileAttrs): AudioFileDoc;
 }
 
 const audioFileSchema = new mongoose.Schema(
@@ -66,8 +67,11 @@ const audioFileSchema = new mongoose.Schema(
   }
 );
 
-audioFileSchema.statics.build = (attr: AudioFileAttrs) => {
-  return new AudioFile(attr);
+audioFileSchema.set('versionKey', 'version');
+audioFileSchema.plugin(updateIfCurrentPlugin);
+
+audioFileSchema.statics.build = (attrs: AudioFileAttrs) => {
+  return new AudioFile(attrs);
 };
 
 const AudioFile = mongoose.model<AudioFileDoc, AudioFileModel>(
