@@ -10,7 +10,7 @@ router.get(
   async (req: Request, res: Response) => {
     const playlists = await Playlist.find({
       userId: req.currentUser!.id,
-    }).populate('audioFile');
+    }).populate('audioFiles');
 
     res.send(playlists);
   }
