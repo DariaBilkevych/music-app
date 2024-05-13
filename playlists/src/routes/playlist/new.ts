@@ -1,13 +1,18 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
-import { BadRequestError, validateRequest } from '@dbmusicapp/common';
-import { Playlist } from '../models/playlist';
-import { AudioFile } from '../models/audio-file';
+import {
+  BadRequestError,
+  requireAuth,
+  validateRequest,
+} from '@dbmusicapp/common';
+import { Playlist } from '../../models/playlist';
+import { AudioFile } from '../../models/audio-file';
 
 const router = express.Router();
 
 router.post(
   '/api/playlists',
+  requireAuth,
   [
     body('title')
       .trim()
