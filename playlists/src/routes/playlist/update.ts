@@ -26,6 +26,10 @@ router.put(
       throw new NotAuthorizedError();
     }
 
+    if (playlist.title === 'Улюблене') {
+      throw new BadRequestError('Cannot update the favorite playlist');
+    }
+
     const existingPlaylist = await Playlist.findOne({
       userId: req.currentUser!.id,
       title,

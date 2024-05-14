@@ -4,7 +4,7 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { currentUser, errorHandler, NotFoundError } from '@dbmusicapp/common';
 
-import { indexPlaylistRouter } from './routes';
+import { indexPlaylistRouter } from './routes/playlist';
 import { newPlaylistRouter } from './routes/playlist/new';
 import { showPlaylistRouter } from './routes/playlist/show';
 import { updatePlaylistRouter } from './routes/playlist/update';

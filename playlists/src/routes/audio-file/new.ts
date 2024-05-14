@@ -45,6 +45,7 @@ router.post(
     }
 
     playlist.audioFiles.push(audioFile._id);
+    playlist.audioFilesCount = playlist.audioFiles.length;
     await playlist.save();
 
     await playlist.populate('audioFiles');

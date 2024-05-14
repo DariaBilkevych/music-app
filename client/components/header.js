@@ -4,13 +4,17 @@ export default ({ currentUser }) => {
   const links = [
     !currentUser && { label: 'Реєстрація', href: '/auth/signup' },
     !currentUser && { label: 'Авторизація', href: '/auth/signin' },
+    currentUser && { label: 'Мої плейлисти', href: '/playlists/all' },
     currentUser && { label: 'Вихід', href: '/auth/signout' },
   ]
     .filter((linkConfig) => linkConfig)
     .map(({ label, href }) => {
       return (
         <li key={href} className="nav-item">
-          <Link className="nav-link" href={href}>
+          <Link
+            className="nav-link text-gray-700 hover:text-orange-500"
+            href={href}
+          >
             {label}
           </Link>
         </li>
@@ -18,14 +22,12 @@ export default ({ currentUser }) => {
     });
 
   return (
-    <nav className="navbar navbar-light bg-light">
-      <Link className="navbar-brand" href="/">
-        Стимінг
+    <nav className="bg-neutral-100 flex justify-between items-center px-4 py-2">
+      <Link className="flex items-center" href="/">
+        <span className="text-xl font-bold mr-2">Меломан</span>
+        <i className="ri-music-2-line text-2xl"></i>
       </Link>
-
-      <div className="d-flex justify-content-end">
-        <ul className="nav d-flex align-items-center">{links}</ul>
-      </div>
+      <ul className="nav flex space-x-4">{links}</ul>
     </nav>
   );
 };

@@ -1,6 +1,6 @@
 import { requireAuth } from '@dbmusicapp/common';
 import express, { Request, Response } from 'express';
-import { Playlist } from '../models/playlist';
+import { Playlist } from '../../models/playlist';
 
 const router = express.Router();
 

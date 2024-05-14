@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { PlayerContext } from './context';
+import { PlayerContext } from './player-context';
 
 const SongsList = ({ allSongs, onSelectSong }) => {
   const { currentSong } = useContext(PlayerContext);
@@ -9,27 +9,25 @@ const SongsList = ({ allSongs, onSelectSong }) => {
   };
 
   return (
-    <div className="row">
+    <div className="container mx-auto px-4 py-2">
       {allSongs.map((song) => (
         <div
           key={song.id}
-          className={`row currently-playing ${
+          className={`list-group-item d-flex justify-content-between align-items-center rounded-md hover:bg-stone-100 shadow-sm cursor-pointer py-3 px-4 mb-2 ${
             currentSong && currentSong.id === song.id
-              ? 'shadow rounded text-active font-semibold border-active border-2'
+              ? 'bg-stone-100 font-bold text-orange-400'
               : ''
           }`}
           onClick={() => handleSelectSong(song)}
         >
-          <div className="col-lg-12 d-flex justify-content-between align-items-center px-0">
-            <div className="col">
-              <h5 className="display-4">{song.title}</h5>
-              <h5 className="lead">
-                {song.artist}, {song.album}, {song.year}
-              </h5>
-            </div>
-            <div className="col text-end">
-              <h1 className="lead">{song.duration}</h1>
-            </div>
+          <div className="col">
+            <h5 className="text-xl font-bold">{song.title}</h5>
+            <h5 className="text-gray-500 text-sm">
+              {song.artist}, {song.album}, {song.year}
+            </h5>
+          </div>
+          <div className="col text-end">
+            <h1 className="text-gray-500 text-sm">{song.duration}</h1>
           </div>
         </div>
       ))}

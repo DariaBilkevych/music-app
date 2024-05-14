@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { transform } from 'typescript';
 import { AudioFileDoc } from './audio-file';
 
 interface PlaylistAttrs {
@@ -12,6 +11,7 @@ interface PlaylistDoc extends mongoose.Document {
   userId: string;
   title: string;
   audioFiles: AudioFileDoc[];
+  audioFilesCount: number;
 }
 
 interface PlaylistModel extends mongoose.Model<PlaylistDoc> {
@@ -32,6 +32,10 @@ const playlistSchema = new mongoose.Schema(
       type: [mongoose.Schema.Types.ObjectId],
       default: [],
       ref: 'AudioFile',
+    },
+    audioFilesCount: {
+      type: Number,
+      default: 0,
     },
   },
   {

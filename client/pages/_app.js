@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import 'remixicon/fonts/remixicon.css';
+import '../styles/globals.css';
 
 import buildClient from '../api/build-client';
 import Header from '../components/header';

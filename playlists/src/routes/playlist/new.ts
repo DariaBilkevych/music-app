@@ -50,6 +50,7 @@ router.post(
       title,
       userId: req.currentUser!.id,
       audioFiles: validAudioFiles.map((audioFile) => audioFile.id),
+      audioFilesCount: validAudioFiles.length,
     });
 
     // Populate the audioFiles field with full audio file objects

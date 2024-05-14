@@ -35,6 +35,8 @@ router.delete(
       (audioFile) => audioFile.toString() !== audioFileId
     );
 
+    playlist.audioFilesCount = playlist.audioFiles.length;
+
     await playlist.save();
     res.status(204).send();
   }
