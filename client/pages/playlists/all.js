@@ -58,27 +58,26 @@ const PlaylistsPage = () => {
         {playlists.map((playlist) => (
           <div key={playlist.id} className="col-md-4">
             <div className="playlist-card bg-white rounded-lg shadow-md p-4 mb-3 hover:shadow-orange-300 hover:shadow-md hover:shadow-spread-radius-2">
-              <Link href={`/playlists/${playlist.id}`}>
-                <div className="flex justify-between items-center">
-                  <h5 className="card-title text-xl font-bold">
+              <div className="flex justify-between items-center">
+                <Link href={`/playlists/${playlist.id}`}>
+                  <h5 className="card-title text-xl font-bold cursor-pointer">
                     {playlist.title}
                   </h5>
-                  {editing && (
-                    <button
-                      onClick={() => handleDeletePlaylist(playlist.id)}
-                      className="flex items-center px-2 py-1 rounded-md border border-gray-300 hover:border-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300"
-                    >
-                      <i className="ri-delete-bin-5-fill text-orange-400 text-2xl"></i>
-                    </button>
-                  )}
-                </div>
-
-                <div className="playlist-duration text-gray-500">
-                  <span>
-                    Загальна кількість треків: {playlist.audioFilesCount}
-                  </span>
-                </div>
-              </Link>
+                </Link>
+                {editing && (
+                  <button
+                    onClick={() => handleDeletePlaylist(playlist.id)}
+                    className="flex items-center px-2 py-1 rounded-md border border-gray-300 hover:border-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300"
+                  >
+                    <i className="ri-delete-bin-5-fill text-orange-400 text-2xl"></i>
+                  </button>
+                )}
+              </div>
+              <div className="playlist-duration text-gray-500">
+                <span>
+                  Загальна кількість треків: {playlist.audioFilesCount}
+                </span>
+              </div>
             </div>
           </div>
         ))}
