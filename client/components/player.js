@@ -15,6 +15,12 @@ const Player = ({ content, selectedSong }) => {
     }
   }, [selectedSong]);
 
+  useEffect(() => {
+    if (!content.some((song) => song.id === currentSong.id)) {
+      setIsPlaying(false);
+    }
+  }, [content, currentSong]);
+
   const handlePlayPause = () => {
     if (audioRef.current.paused) {
       audioRef.current.play();

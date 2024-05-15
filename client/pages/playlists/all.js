@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
+import CreatePlaylistModal from '../../components/create-playlist-modal';
 
 const PlaylistsPage = () => {
   const [playlists, setPlaylists] = useState([]);
   const [editing, setEditing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
@@ -23,6 +25,16 @@ const PlaylistsPage = () => {
     setEditing(!editing);
   };
 
+  const handleCreatePlaylist = async (title) => {
+    try {
+      const response = await axios.post('/api/playlists', { title });
+      setPlaylists([...playlists, response.data]);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error creating playlist:', error);
+    }
+  };
+
   const handleDeletePlaylist = async (id) => {
     try {
       await axios.delete(`/api/playlists/${id}`);
@@ -35,11 +47,12 @@ const PlaylistsPage = () => {
   return (
     <div className="container mx-auto px-8">
       <div className="flex justify-between items-center mb-5 mt-6">
-        <Link href="/create-playlist">
-          <button className="flex items-center px-4 py-2 border border-orange-400 text-orange-400 rounded-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300">
-            <i className="ri-add-line mr-2" /> Створити плейлист
-          </button>
-        </Link>
+        <button
+          className="flex items-center px-4 py-2 border border-orange-400 text-orange-400 rounded-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <i className="ri-add-line mr-2" /> Створити плейлист
+        </button>
         <button
           onClick={handleEditToggle}
           className="flex items-center px-4 py-2 border border-orange-400 text-orange-400 rounded-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300"
@@ -82,6 +95,11 @@ const PlaylistsPage = () => {
           </div>
         ))}
       </div>
+      <CreatePlaylistModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreate={handleCreatePlaylist}
+      />
     </div>
   );
 };

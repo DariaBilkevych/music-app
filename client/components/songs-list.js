@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { PlayerContext } from './player-context';
 
-const SongsList = ({ allSongs, onSelectSong }) => {
+const SongsList = ({ allSongs, onSelectSong, onDeleteSong, isEditing }) => {
   const { currentSong } = useContext(PlayerContext);
 
   const handleSelectSong = (song) => {
@@ -20,6 +20,14 @@ const SongsList = ({ allSongs, onSelectSong }) => {
           }`}
           onClick={() => handleSelectSong(song)}
         >
+          {isEditing && (
+            <button
+              className={`flex items-center px-2 py-1 border border-orange-400 rounded-full text-orange-400 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300 mr-4`}
+              onClick={() => onDeleteSong(song.id)}
+            >
+              <i className="ri-subtract-line text-orange-400 font-bold"></i>
+            </button>
+          )}
           <div className="col">
             <h5 className="text-xl font-bold">{song.title}</h5>
             <h5 className="text-gray-500 text-sm">
