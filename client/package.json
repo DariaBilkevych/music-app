@@ -17,6 +17,7 @@
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.10",
     "react-modal": "^3.16.1",
+    "react-tooltip": "^5.26.4",
     "remixicon": "^4.2.0"
   },
   "devDependencies": {

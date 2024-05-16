@@ -1,11 +1,50 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { PlayerContext } from './player-context';
+import PlaylistListModal from './playlist-list-modal';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 const SongsList = ({ allSongs, onSelectSong, onDeleteSong, isEditing }) => {
   const { currentSong } = useContext(PlayerContext);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSong, setSelectedSong] = useState(null);
+  const [playlists, setPlaylists] = useState([]);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const response = await axios.get('/api/playlists');
+        setPlaylists(response.data);
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
+    };
+
+    fetchPlaylists();
+  }, []);
 
   const handleSelectSong = (song) => {
     onSelectSong(song);
+  };
+
+  const handleAddToPlaylistClick = (song) => {
+    setSelectedSong(song);
+    setIsModalOpen(true);
+  };
+
+  const handleAddSongToPlaylist = async (playlist) => {
+    try {
+      const response = await axios.post(
+        `/api/playlists/${playlist.id}/add-audio`,
+        { audioFileId: selectedSong.id }
+      );
+      const newPlaylist = response.data;
+      router.push(`/playlists/${newPlaylist.id}`);
+    } catch (error) {
+      console.error('Error adding song to playlist:', error);
+    }
   };
 
   return (
@@ -37,8 +76,21 @@ const SongsList = ({ allSongs, onSelectSong, onDeleteSong, isEditing }) => {
           <div className="col text-end">
             <h1 className="text-gray-500 text-sm">{song.duration}</h1>
           </div>
+          <button
+            className={`flex items-center px-2 py-1 border border-orange-400 rounded-full text-orange-400 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300 ml-4`}
+            title="Додати до плейлисту"
+            onClick={() => handleAddToPlaylistClick(song)}
+          >
+            <i className="ri-add-line text-orange-400 font-bold"></i>
+          </button>
         </div>
       ))}
+      <PlaylistListModal
+        playlists={playlists}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddSongToPlaylist={handleAddSongToPlaylist}
+      />
     </div>
   );
 };
