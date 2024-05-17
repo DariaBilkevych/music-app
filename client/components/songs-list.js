@@ -9,6 +9,7 @@ const SongsList = ({ allSongs, onSelectSong, onDeleteSong, isEditing }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSong, setSelectedSong] = useState(null);
   const [playlists, setPlaylists] = useState([]);
+  const [selectedPlaylists, setSelectedPlaylists] = useState({});
 
   const router = useRouter();
 
@@ -29,22 +30,49 @@ const SongsList = ({ allSongs, onSelectSong, onDeleteSong, isEditing }) => {
     onSelectSong(song);
   };
 
-  const handleAddToPlaylistClick = (song) => {
-    setSelectedSong(song);
-    setIsModalOpen(true);
+  const handleUpdateSongInPlaylists = async () => {
+    try {
+      const selectedPlaylistIds = Object.keys(selectedPlaylists);
+      const addPromises = [];
+      const removePromises = [];
+
+      selectedPlaylistIds.forEach((playlistId) => {
+        if (selectedPlaylists[playlistId]) {
+          const playlistContainsSong = playlists
+            .find((playlist) => playlist.id === playlistId)
+            ?.audioFiles.some((file) => file.id === selectedSong.id);
+
+          if (!playlistContainsSong) {
+            addPromises.push(
+              axios.post(`/api/playlists/${playlistId}/add-audio`, {
+                audioFileId: selectedSong.id,
+              })
+            );
+          }
+        } else {
+          removePromises.push(
+            axios.delete(`/api/playlists/${playlistId}/${selectedSong.id}`)
+          );
+        }
+      });
+
+      await Promise.all([...addPromises, ...removePromises]);
+      router.push(`/playlists/all`);
+    } catch (error) {
+      console.error('Error updating song in playlists:', error);
+    }
   };
 
-  const handleAddSongToPlaylist = async (playlist) => {
-    try {
-      const response = await axios.post(
-        `/api/playlists/${playlist.id}/add-audio`,
-        { audioFileId: selectedSong.id }
+  const handlePlaylistInteraction = (song) => {
+    setSelectedSong(song);
+    setIsModalOpen(true);
+    const initialSelectedPlaylists = playlists.reduce((acc, playlist) => {
+      acc[playlist.id] = playlist.audioFiles.some(
+        (file) => file.id === song.id
       );
-      const newPlaylist = response.data;
-      router.push(`/playlists/${newPlaylist.id}`);
-    } catch (error) {
-      console.error('Error adding song to playlist:', error);
-    }
+      return acc;
+    }, {});
+    setSelectedPlaylists(initialSelectedPlaylists);
   };
 
   return (
@@ -79,7 +107,7 @@ const SongsList = ({ allSongs, onSelectSong, onDeleteSong, isEditing }) => {
           <button
             className={`flex items-center px-2 py-1 border border-orange-400 rounded-full text-orange-400 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300 ml-4`}
             title="Додати до плейлисту"
-            onClick={() => handleAddToPlaylistClick(song)}
+            onClick={() => handlePlaylistInteraction(song)}
           >
             <i className="ri-add-line text-orange-400 font-bold"></i>
           </button>
@@ -89,7 +117,10 @@ const SongsList = ({ allSongs, onSelectSong, onDeleteSong, isEditing }) => {
         playlists={playlists}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onAddSongToPlaylist={handleAddSongToPlaylist}
+        onPlaylistInteraction={handleUpdateSongInPlaylists}
+        selectedPlaylists={selectedPlaylists}
+        setSelectedPlaylists={setSelectedPlaylists}
+        selectedSong={selectedSong}
       />
     </div>
   );
