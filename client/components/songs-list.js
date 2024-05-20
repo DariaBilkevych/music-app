@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { PlayerContext } from './player-context';
-import PlaylistListModal from './playlist-list-modal';
+import PlaylistListModal from './playlists-list-modal';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
+import axios from 'axios';
 
 const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
   const [newPlaylistTitle, setNewPlaylistTitle] = useState('');
@@ -12,6 +13,16 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
         return;
       } else if (newPlaylistTitle.length > 255) {
         setError('Назва плейлиста не може бути довшою за 255 символів');
+        return;
+      }
+
+      const existingPlaylists = await axios.get('/api/playlists');
+      const duplicatePlaylist = existingPlaylists.data.find(
+        (playlist) => playlist.title === newPlaylistTitle
+      );
+
+      if (duplicatePlaylist) {
+        setError('Плейлист з такою назвою вже існує');
         return;
       }
 

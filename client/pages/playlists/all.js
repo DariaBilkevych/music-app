@@ -67,34 +67,40 @@ const PlaylistsPage = () => {
           )}
         </button>
       </div>
-      <div className="row mt-5">
-        {playlists.map((playlist) => (
-          <div key={playlist.id} className="col-md-4">
-            <div className="playlist-card bg-white rounded-lg shadow-md p-4 mb-3 hover:shadow-orange-300 hover:shadow-md hover:shadow-spread-radius-2">
-              <div className="flex justify-between items-center">
-                <Link href={`/playlists/${playlist.id}`}>
-                  <h5 className="card-title text-xl font-bold cursor-pointer">
-                    {playlist.title}
-                  </h5>
-                </Link>
-                {editing && (
-                  <button
-                    onClick={() => handleDeletePlaylist(playlist.id)}
-                    className="flex items-center px-2 py-1 rounded-md border border-gray-300 hover:border-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300"
-                  >
-                    <i className="ri-delete-bin-5-fill text-orange-400 text-2xl"></i>
-                  </button>
-                )}
-              </div>
-              <div className="playlist-duration text-gray-500">
-                <span>
-                  Загальна кількість треків: {playlist.audioFilesCount}
-                </span>
+      {playlists.length === 0 ? (
+        <div className="text-center text-gray-500 mt-10">
+          Ще не маєте плейлистів? Можете створити їх прямо зараз!
+        </div>
+      ) : (
+        <div className="row mt-5">
+          {playlists.map((playlist) => (
+            <div key={playlist.id} className="col-md-4">
+              <div className="playlist-card bg-white rounded-lg shadow-md p-4 mb-3 hover:shadow-orange-300 hover:shadow-md hover:shadow-spread-radius-2">
+                <div className="flex justify-between items-center">
+                  <Link href={`/playlists/${playlist.id}`}>
+                    <h5 className="card-title text-xl font-bold cursor-pointer">
+                      {playlist.title}
+                    </h5>
+                  </Link>
+                  {editing && (
+                    <button
+                      onClick={() => handleDeletePlaylist(playlist.id)}
+                      className="flex items-center px-2 py-1 rounded-md border border-gray-300 hover:border-orange-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300"
+                    >
+                      <i className="ri-delete-bin-5-fill text-orange-400 text-2xl"></i>
+                    </button>
+                  )}
+                </div>
+                <div className="playlist-duration text-gray-500">
+                  <span>
+                    Загальна кількість треків: {playlist.audioFilesCount}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
       <CreatePlaylistModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

@@ -48,16 +48,25 @@ const PlaylistListModal = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={onClose}
-      className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm p-4 bg-white rounded-lg shadow-lg"
+      className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-sm p-4 bg-white rounded-lg shadow-lg overflow-auto max-h-96"
       overlayClassName="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50"
     >
       <div className="flex items-center justify-between">
-        <h2 className="font-bold text-lg">Додати до плейлиста</h2>
+        <h2 className="font-bold text-2xl">Додати до плейлиста</h2>
         <button
-          className="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className="text-gray-500 hover:bg-transparent focus:outline-none"
           onClick={onClose}
         >
-          <i className="ri-close-line text-orange-400 text-xl"></i>
+          <i className="ri-close-line text-orange-400 text-2xl"></i>
+        </button>
+      </div>
+      <div className="mt-4 text-center">
+        <span className="text-gray-500">Не має бажаного плейлисту?</span>
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="text-orange-500 hover:underline ml-2 focus:outline-none"
+        >
+          Створити
         </button>
       </div>
       <ul className="mt-4 overflow-auto h-full">
@@ -71,7 +80,7 @@ const PlaylistListModal = ({
               id={playlist.id}
               checked={selectedPlaylists[playlist.id] || false}
               onChange={() => handleCheckboxChange(playlist.id)}
-              className="mr-2"
+              className="form-checkbox h-5 w-5 text-orange-400 rounded-full focus:ring-orange-400 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 mr-2"
             />
             <label htmlFor={playlist.id} className="text-base">
               {playlist.title}
@@ -81,15 +90,9 @@ const PlaylistListModal = ({
       </ul>
       <button
         onClick={onPlaylistInteraction}
-        className="block w-full py-2 mt-4 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
+        className="block w-full py-2 mt-4 bg-gradient-to-r from-orange-400 to-orange-500 text-white px-6 py-2 rounded-md hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-s"
       >
         Зберегти зміни
-      </button>
-      <button
-        onClick={() => setIsCreateModalOpen(true)}
-        className="block w-full py-2 mt-2 bg-gray-500 text-white font-semibold rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
-      >
-        Створити новий плейлист
       </button>
       <CreatePlaylistModal
         isOpen={isCreateModalOpen}

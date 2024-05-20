@@ -1,8 +1,20 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 
 export default ({ url, method, body, onSuccess }) => {
   const [errors, setErrors] = useState(null);
+
+  useEffect(() => {
+    if (errors) {
+      errors.forEach((error) => {
+        toast.error(error, {
+          position: 'top-center',
+          duration: 3000,
+        });
+      });
+    }
+  }, [errors]);
 
   const doRequest = async () => {
     try {
@@ -15,16 +27,9 @@ export default ({ url, method, body, onSuccess }) => {
 
       return response.data;
     } catch (err) {
-      setErrors(
-        <div className="alert alert-danger">
-          <h4>Ooops....</h4>
-          <ul className="my-0">
-            {err.response.data.errors.map((err) => (
-              <li key={err.message}>{err.message}</li>
-            ))}
-          </ul>
-        </div>
-      );
+      const errorMessages = err.response.data.errors.map((err) => err.message);
+      setErrors(errorMessages);
+      return errorMessages;
     }
   };
 

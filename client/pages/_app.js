@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import 'remixicon/fonts/remixicon.css';
 import '../styles/globals.css';
+import { Toaster } from 'react-hot-toast';
 
 import buildClient from '../api/build-client';
 import Header from '../components/header';
@@ -8,6 +9,7 @@ import Header from '../components/header';
 const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <div>
+      <Toaster />
       <Header currentUser={currentUser} />
       <div className="container">
         <Component currentUser={currentUser} {...pageProps} />

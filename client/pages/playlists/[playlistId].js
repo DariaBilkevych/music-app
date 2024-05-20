@@ -72,7 +72,7 @@ const PlaylistShow = () => {
               {editing ? (
                 <input
                   type="text"
-                  className="border-b border-orange-500 px-3 py-1 focus:outline-none focus:border-orange-500 text-3xl font-bold"
+                  class="border-b border-orange-500 px-3 py-1 focus:outline-none focus:border-none focus:ring-none text-3xl font-bold border-t-0 border-l-0 border-r-0"
                   value={newPlaylistTitle}
                   onChange={(e) => setNewPlaylistTitle(e.target.value)}
                 />
