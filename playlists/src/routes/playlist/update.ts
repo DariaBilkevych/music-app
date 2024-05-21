@@ -32,7 +32,7 @@ router.put(
     });
 
     if (existingPlaylist && existingPlaylist.id !== playlistId) {
-      throw new BadRequestError('A playlist with this title already exists');
+      throw new BadRequestError('Плейлист з такою назвою вже існує!');
     }
 
     playlist.set({ title });

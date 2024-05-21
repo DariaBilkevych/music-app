@@ -10,6 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@dicebear/avatars": "^4.10.8",
+    "@dicebear/avatars-avataaars-sprites": "^4.10.8",
+    "@dicebear/avatars-identicon-sprites": "^4.10.8",
+    "@headlessui/react": "^2.0.3",
     "axios": "^1.6.7",
     "bootstrap": "^5.3.3",
     "flowbite": "^2.3.0",
@@ -18,6 +23,7 @@
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.10",
     "react-hot-toast": "^2.4.1",
+    "react-light-accordion": "^0.1.4",
     "react-modal": "^3.16.1",
     "react-tooltip": "^5.26.4",
     "remixicon": "^4.2.0"

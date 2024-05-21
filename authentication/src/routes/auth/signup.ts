@@ -30,7 +30,9 @@ router.post(
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      throw new BadRequestError('Ця електронна адреса вже використовується!');
+      throw new BadRequestError(
+        'Ця електронна адреса вже використовується! Авторизуйтесь, будь ласка!'
+      );
     }
 
     const user = User.build({

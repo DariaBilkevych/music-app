@@ -11,7 +11,7 @@ const transporter = mailer.createTransport({
   },
 });
 
-export const sendVerificationEmail = (
+export const sendVerificationEmail = async (
   email: string,
   verificationToken: string
 ) => {

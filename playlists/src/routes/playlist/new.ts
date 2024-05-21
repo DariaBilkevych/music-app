@@ -15,9 +15,9 @@ router.post(
   [
     body('title')
       .trim()
-      .isLength({ min: 1, max: 255 })
+      .isLength({ min: 1, max: 10 })
       .withMessage(
-        'Playlist title is required and must be between 1 and 255 characters'
+        'Назва плейлиста є обов’язковою і має бути від 1 до 10 символів'
       ),
   ],
   validateRequest,
@@ -30,7 +30,7 @@ router.post(
     });
 
     if (existingPlaylist) {
-      throw new BadRequestError('A playlist with this title already exists');
+      throw new BadRequestError('Плейлист з такою назвою вже існує!');
     }
 
     const playlist = await Playlist.create({

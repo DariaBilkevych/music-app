@@ -10,11 +10,11 @@ const router = express.Router();
 router.post(
   '/api/users/signin',
   [
-    body('email').isEmail().withMessage('Email must be valid'),
+    body('email').isEmail().withMessage('Некоректна пошта!'),
     body('password')
       .trim()
       .notEmpty()
-      .withMessage('You must supply a password'),
+      .withMessage('Введіть пароль, будь ласка!'),
   ],
   validateRequest,
   async (req: Request, res: Response) => {
@@ -23,7 +23,7 @@ router.post(
     const existingUser = await User.findOne({ email });
     if (!existingUser) {
       throw new BadRequestError(
-        'Invalid credentials. This user does not exist!'
+        'За цією поштою не знайдено жодного акаунту! Зареєструйтесь, будь ласка!'
       );
     }
 
@@ -32,7 +32,7 @@ router.post(
       password
     );
     if (!passwordsMatch) {
-      throw new BadRequestError('Invalid Credentials');
+      throw new BadRequestError('Неправильний пароль!');
     }
 
     // Generate JWT
@@ -42,6 +42,7 @@ router.post(
         name: existingUser.name,
         email: existingUser.email,
         role: existingUser.role,
+        emailVerified: existingUser.emailVerified,
       },
       process.env.JWT_KEY!
     );

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Router from 'next/router';
 import useRequest from '../../hooks/use-request';
+import Link from 'next/link';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -17,7 +18,7 @@ export default function Signup() {
       password,
     },
     onSuccess: () => {
-      Router.push('/');
+      Router.push('/auth/verify-email');
     },
   });
 
@@ -32,7 +33,7 @@ export default function Signup() {
         onSubmit={onSubmit}
         className="w-full max-w-md bg-white p-8 rounded shadow-md border border-orange-400"
       >
-        <h1 className="text-2xl font-bold mb-6 text-center text-orange-400">
+        <h1 className="text-2xl font-bold mb-6 text-center text-orange-500">
           Реєстрація
         </h1>
         <div className="mb-4">
@@ -44,32 +45,43 @@ export default function Signup() {
             onChange={(e) => setName(e.target.value)}
             type="text"
             placeholder="Введіть ваше ім’я"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="ppearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
+          <label
+            htmlFor="email"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
             Електронна пошта
           </label>
           <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            type="email"
             placeholder="Введіть вашу електронну пошту"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
           />
         </div>
         <div className="mb-6">
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Пароль
           </label>
-          <div className="relative">
+          <div htmlFor="password" className="relative">
             <input
+              id="password"
+              name="password"
+              autoComplete="current-password"
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type={showPassword ? 'text' : 'password'}
               placeholder="••••••••"
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+              className="appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
             />
             <button
               type="button"
@@ -92,6 +104,17 @@ export default function Signup() {
           >
             Зареєструватись
           </button>
+        </div>
+        <div className="mt-4 text-center">
+          <p className="text-gray-600">
+            Вже маєте акаунт?{' '}
+            <Link
+              href="/auth/signin"
+              className="text-orange-500 hover:underline"
+            >
+              Авторизуватись
+            </Link>
+          </p>
         </div>
       </form>
     </div>

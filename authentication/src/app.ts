@@ -13,6 +13,7 @@ import { currentUserRouter } from './routes/user/current-user';
 import { updateUserRouter } from './routes/user/update';
 
 import { emailVerificationRouter } from './routes/auth/verify-email';
+import { resendVerificationEmailRouter } from './routes/auth/resend-verification-email';
 
 const app = express();
 app.set('trust proxy', true);
@@ -34,6 +35,7 @@ app.use(currentUserRouter);
 app.use(updateUserRouter);
 
 app.use(emailVerificationRouter);
+app.use(resendVerificationEmailRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();

@@ -15,7 +15,7 @@ const PlaylistShow = () => {
   const router = useRouter();
   const { playlistId } = router.query;
 
-  const { doRequest: fetchPlaylist, errors: fetchErrors } = useRequest({
+  const { doRequest: fetchPlaylist } = useRequest({
     url: `/api/playlists/${playlistId}`,
     method: 'get',
     onSuccess: (data) => {
@@ -23,7 +23,7 @@ const PlaylistShow = () => {
     },
   });
 
-  const { doRequest: updatePlaylist, errors: updateErrors } = useRequest({
+  const { doRequest: updatePlaylist } = useRequest({
     url: `/api/playlists/${playlistId}`,
     method: 'put',
     body: {
@@ -65,7 +65,6 @@ const PlaylistShow = () => {
   return (
     <PlayerProvider>
       <div className="container mx-auto px-4 py-8">
-        {fetchErrors && <div className="alert alert-danger">{fetchErrors}</div>}
         {playlist ? (
           <div className="flex flex-col">
             <div className="flex items-center justify-between mb-4">

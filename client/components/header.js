@@ -5,6 +5,7 @@ export default ({ currentUser }) => {
     !currentUser && { label: 'Реєстрація', href: '/auth/signup' },
     !currentUser && { label: 'Авторизація', href: '/auth/signin' },
     currentUser && { label: 'Мої плейлисти', href: '/playlists/all' },
+    currentUser && { label: 'Особистий кабінет', href: '/user/profile' },
     currentUser && { label: 'Вихід', href: '/auth/signout' },
   ]
     .filter((linkConfig) => linkConfig)

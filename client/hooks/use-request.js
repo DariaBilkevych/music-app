@@ -8,10 +8,7 @@ export default ({ url, method, body, onSuccess }) => {
   useEffect(() => {
     if (errors) {
       errors.forEach((error) => {
-        toast.error(error, {
-          position: 'top-center',
-          duration: 3000,
-        });
+        toast.error(error);
       });
     }
   }, [errors]);

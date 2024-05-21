@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, createRef } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { PlayerContext } from './player-context';
 
 const Player = ({ content, selectedSong }) => {
@@ -6,7 +6,7 @@ const Player = ({ content, selectedSong }) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(0.5);
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = createRef();
+  const audioRef = useRef();
   const { setCurrentSong: contextSetCurrentSong } = useContext(PlayerContext);
 
   useEffect(() => {
@@ -47,14 +47,20 @@ const Player = ({ content, selectedSong }) => {
     setCurrentSong(content[nextIndex]);
   };
 
+  const handleEnded = () => {
+    const currentIndex = content.findIndex(
+      (song) => song.id === currentSong.id
+    );
+    const nextIndex = (currentIndex + 1) % content.length;
+    setCurrentSong(content[nextIndex]);
+  };
+
   useEffect(() => {
     if (isPlaying) {
-      audioRef.current.pause();
-      audioRef.current.load();
       audioRef.current.play();
       contextSetCurrentSong(currentSong);
     }
-  }, [isPlaying, currentSong]);
+  }, [isPlaying, currentSong, contextSetCurrentSong]);
 
   return (
     <div className="absolute bottom-0 left-0 right-0 p-5 shadow-lg bg-white">
@@ -73,6 +79,7 @@ const Player = ({ content, selectedSong }) => {
             src={currentSong?.src}
             ref={audioRef}
             onTimeUpdate={(e) => setCurrentTime(e.target.currentTime)}
+            onEnded={handleEnded}
           />
           <div className="flex justify-center gap-7">
             <i
