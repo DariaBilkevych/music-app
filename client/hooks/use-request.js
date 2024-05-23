@@ -13,10 +13,10 @@ export default ({ url, method, body, onSuccess }) => {
     }
   }, [errors]);
 
-  const doRequest = async () => {
+  const doRequest = async (customBody = null) => {
     try {
       setErrors(null);
-      const response = await axios[method](url, body);
+      const response = await axios[method](url, customBody || body);
 
       if (onSuccess) {
         onSuccess(response.data);

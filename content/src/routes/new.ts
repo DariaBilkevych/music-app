@@ -1,9 +1,10 @@
-import { requireAuth } from '@dbmusicapp/common';
+import { requireAuth, validateRequest } from '@dbmusicapp/common';
 import express, { Request, Response } from 'express';
 import multer from 'multer';
 import { cloudinary } from '../cloudinary';
 import { AudioFile } from '../models/audio-file';
 import fs from 'fs';
+import { body } from 'express-validator';
 import { ContentCreatedPublisher } from '../events/publishers/content-created-publisher';
 import { natsWrapper } from '../nats-wrapper';
 
@@ -28,6 +29,33 @@ router.post(
   '/api/content',
   requireAuth,
   upload.single('file'),
+  [
+    body('title')
+      .trim()
+      .isLength({ min: 1, max: 20 })
+      .withMessage(
+        'Назва є обов’язковою та повинна містити від 1 до 20 символів'
+      ),
+    body('artist')
+      .trim()
+      .isLength({ min: 1, max: 20 })
+      .withMessage(
+        'Виконавець є обов’язковим та повинен містити від 1 до 50 символів'
+      ),
+    body('album')
+      .trim()
+      .isLength({ min: 1, max: 20 })
+      .withMessage(
+        'Альбом є обов’язковим та повинен містити від 1 до 20 символів'
+      ),
+    body('year')
+      .isInt({ min: 1900, max: new Date().getFullYear() })
+      .withMessage('Рік випуску має бути від 1900 до поточного року'),
+    body('duration')
+      .isFloat({ min: 0.01 })
+      .withMessage('Тривалість має бути числом більше 0'),
+  ],
+  validateRequest,
   async (req: Request, res: Response) => {
     try {
       if (!req.file) {

@@ -7,6 +7,9 @@ import { currentUser, errorHandler, NotFoundError } from '@dbmusicapp/common';
 import { uploadContentRouter } from './routes/new';
 import { updateContentRouter } from './routes/update';
 import { indexContentRouter } from './routes/index';
+import { showAllUserConentRouter } from './routes/show';
+import { showOneUserContentRouter } from './routes/show-one';
+import { deleteContentRouter } from './routes/delete';
 
 const app = express();
 app.set('trust proxy', true);
@@ -22,6 +25,9 @@ app.use(currentUser);
 app.use(uploadContentRouter);
 app.use(updateContentRouter);
 app.use(indexContentRouter);
+app.use(showAllUserConentRouter);
+app.use(showOneUserContentRouter);
+app.use(deleteContentRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();

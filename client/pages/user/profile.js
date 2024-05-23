@@ -2,19 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { createAvatar } from '@dicebear/avatars';
 import * as style from '@dicebear/avatars-avataaars-sprites';
-import { Accordion, AccordionItem } from 'react-light-accordion';
-import 'react-light-accordion/demo/css/index.css';
 import useRequest from '../../hooks/use-request';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import Loader from '../../components/loader';
 
 const UserProfile = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const router = useRouter();
+  const [songs, setSongs] = useState([]);
 
   const { doRequest: updateProfileRequest } = useRequest({
     url: `/api/users/${currentUser?.id}`,
@@ -23,6 +21,7 @@ const UserProfile = () => {
     onSuccess: (data) => {
       setCurrentUser(data);
       updateAvatar(data.name);
+      toast.success('Дані успішно оновлено!');
     },
   });
 
@@ -37,6 +36,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     fetchCurrentUser();
+    fetchUserSongs();
   }, []);
 
   const fetchCurrentUser = async () => {
@@ -46,6 +46,15 @@ const UserProfile = () => {
       setName(data.currentUser.name);
       setEmail(data.currentUser.email);
       updateAvatar(data.currentUser.name);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchUserSongs = async () => {
+    try {
+      const { data } = await axios.get('/api/content/user-content');
+      setSongs(data);
     } catch (error) {
       console.error(error);
     }
@@ -75,19 +84,13 @@ const UserProfile = () => {
   };
 
   if (!currentUser) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-xl font-semibold text-gray-700">
-          Завантаження...
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (
     <div className="py-8 min-h-screen">
-      <div className="container mx-auto px-4">
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-3xl mx-auto p-4">
+      <div className="container mx-auto px-4 flex flex-wrap">
+        <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-3xl mx-auto p-4 w-full lg:w-2/3">
           <div className="flex items-center p-4 border-b border-gray-200">
             <img
               src={avatarUrl}
@@ -124,50 +127,81 @@ const UserProfile = () => {
               </Link>
             </p>
           </div>
-          <Accordion atomic={true}>
-            <AccordionItem title="Редагувати профіль" className="mt-4">
-              <form onSubmit={handleSubmit} className="p-4">
-                <div className="mb-4">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="name"
-                  >
-                    Ім'я
-                  </label>
-                  <input
-                    id="name"
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="email"
-                  >
-                    Електронна пошта
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
-                </div>
-                <div className="flex items-center justify-center">
-                  <button
-                    type="submit"
-                    className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  >
-                    Зберегти зміни
-                  </button>
-                </div>
-              </form>
-            </AccordionItem>
-          </Accordion>
+          <div className="p-4">
+            <form onSubmit={handleSubmit}>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="name"
+                >
+                  Ім'я
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+              <div className="mb-4">
+                <label
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                  htmlFor="email"
+                >
+                  Електронна пошта
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                />
+              </div>
+              <div className="flex items-center justify-center">
+                <button
+                  type="submit"
+                  className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                  Зберегти зміни
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div className="w-full lg:w-1/3 lg:pl-4 mt-8 lg:mt-0">
+          <div className="bg-white shadow-lg rounded-lg p-4">
+            <h3 className="text-lg font-semibold mb-4">
+              Мої завантажені треки
+            </h3>
+            <ul>
+              {songs.map((song) => (
+                <li
+                  key={song.id}
+                  className="mb-2 flex justify-between items-center"
+                >
+                  <div>
+                    <p className="font-semibold">{song.title}</p>
+                    <p className="text-gray-600">
+                      {song.artist} ({song.album})
+                    </p>
+                  </div>
+                  <div className="flex space-x-2">
+                    <Link
+                      href="/content/[audioFileId]"
+                      as={`/content/${song.id}`}
+                    >
+                      <i className="ri-edit-box-line text-gray-600 hover:text-gray-800" />
+                    </Link>
+                    <button onClick={() => handleDeleteSong(song.id)}>
+                      <i className="ri-delete-bin-line text-gray-600 hover:text-gray-800" />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

@@ -1,43 +1,61 @@
-import { useState } from 'react';
-import { FileUploader } from 'react-drag-drop-files';
-import { toast } from 'react-hot-toast';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import useRequest from '../../hooks/use-request';
+import axios from 'axios';
+import { toast } from 'react-hot-toast';
 import Loader from '../../components/loader';
+import useRequest from '../../hooks/use-request';
 
-const NewAudioFile = () => {
-  const [loading, setLoading] = useState(false);
+const UpdateSong = () => {
+  const router = useRouter();
+  const { audioFileId } = router.query;
+  const [loading, setLoading] = useState(true);
   const [song, setSong] = useState({
     title: '',
     artist: '',
     album: '',
     year: '',
     duration: '',
-    file: '',
+    src: '',
   });
 
-  const router = useRouter();
+  useEffect(() => {
+    if (audioFileId) {
+      fetchSong(audioFileId);
+    }
+  }, [audioFileId]);
 
-  const fileTypes = ['MP3'];
-  const handleChange = (file) => {
-    setSong({ ...song, file: file });
+  const fetchSong = async (audioFileId) => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`/api/content/${audioFileId}`);
+      setSong({
+        title: data.title,
+        artist: data.artist,
+        album: data.album,
+        year: data.year,
+        duration: data.duration,
+        src: data.src,
+      });
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      toast.error('Помилка завантаження даних треку');
+      setLoading(false);
+    }
   };
 
   const { doRequest } = useRequest({
-    url: '/api/content',
-    method: 'post',
-    headers: { 'Content-Type': 'multipart/form-data' },
+    url: `/api/content/${audioFileId}`,
+    method: 'put',
     onSuccess: () => {
       setLoading(false);
-      toast.success('Файл успішно завантажено!');
-      router.push('/');
+      toast.success('Дані успішно оновлено!');
+      router.push('/user/profile');
     },
   });
 
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-
+  const onSubmit = async (e) => {
+    e.preventDefault();
     const formData = new FormData();
     formData.append('title', song.title);
     formData.append('artist', song.artist);
@@ -45,19 +63,23 @@ const NewAudioFile = () => {
     formData.append('year', song.year);
     formData.append('duration', song.duration);
 
-    if (song.file) {
-      formData.append('file', song.file);
+    try {
+      doRequest(formData);
+    } catch (error) {
+      console.error(error);
+      toast.error('Помилка оновлення треку');
     }
-
-    doRequest(formData);
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="max-w-screen-xl mx-auto p-8 bg-white rounded-lg">
       <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
-        Завантажити власний трек
+        Редагувати трек
       </h1>
-      {loading && <Loader />}
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
           <label
@@ -136,16 +158,17 @@ const NewAudioFile = () => {
         </div>
         <div>
           <label
-            htmlFor="file"
+            htmlFor="src"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Файл (MP3)
+            Посилання на файл
           </label>
-          <FileUploader
-            handleChange={handleChange}
-            name="file"
-            types={fileTypes}
-            className="border rounded py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+          <input
+            type="text"
+            id="src"
+            value={song.src}
+            readOnly
+            className="w-full appearance-none border rounded py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
           />
         </div>
         <div className="flex">
@@ -153,7 +176,7 @@ const NewAudioFile = () => {
             type="submit"
             className="bg-orange-400 hover:bg-orange-500 text-white font-bold py-2 px-10 rounded focus:outline-none focus:shadow-outline"
           >
-            Завантажити
+            Оновити
           </button>
         </div>
       </form>
@@ -161,4 +184,4 @@ const NewAudioFile = () => {
   );
 };
 
-export default NewAudioFile;
+export default UpdateSong;
