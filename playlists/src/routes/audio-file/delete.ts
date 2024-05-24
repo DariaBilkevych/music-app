@@ -6,6 +6,7 @@ import {
   NotFoundError,
   requireAuth,
 } from '@dbmusicapp/common';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
@@ -32,7 +33,8 @@ router.delete(
     }
 
     playlist.audioFiles = playlist.audioFiles.filter(
-      (audioFile) => audioFile.toString() !== audioFileId
+      (audioFile: mongoose.Types.ObjectId) =>
+        audioFile.toString() !== audioFileId
     );
 
     playlist.audioFilesCount = playlist.audioFiles.length;

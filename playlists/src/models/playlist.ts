@@ -4,13 +4,13 @@ import { AudioFileDoc } from './audio-file';
 interface PlaylistAttrs {
   userId: string;
   title: string;
-  audioFiles: AudioFileDoc[];
+  audioFiles: AudioFileDoc[] | any;
 }
 
 interface PlaylistDoc extends mongoose.Document {
   userId: string;
   title: string;
-  audioFiles: AudioFileDoc[];
+  audioFiles: AudioFileDoc[] | any;
   audioFilesCount: number;
 }
 

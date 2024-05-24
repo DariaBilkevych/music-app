@@ -5,6 +5,8 @@ import {
   NotFoundError,
   requireAuth,
 } from '@dbmusicapp/common';
+import { natsWrapper } from '../nats-wrapper';
+import { ContentDeletedPublisher } from '../events/publishers/content-deleted-publisher';
 
 const router = express.Router();
 
@@ -27,6 +29,11 @@ router.delete(
     }
 
     await AudioFile.findByIdAndDelete(audioFileId);
+
+    await new ContentDeletedPublisher(natsWrapper.client).publish({
+      id: audioFile.id,
+    });
+
     res.status(204).send();
   }
 );

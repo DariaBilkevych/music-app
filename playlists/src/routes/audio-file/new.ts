@@ -16,7 +16,6 @@ router.post(
   async (req: Request, res: Response) => {
     const { playlistId } = req.params;
     const { audioFileId } = req.body;
-    console.log([playlistId, audioFileId]);
 
     const playlist = await Playlist.findById(playlistId);
 
@@ -34,15 +33,15 @@ router.post(
       throw new NotFoundError();
     }
 
-    const existingAudioFileIndex = playlist.audioFiles.findIndex((audio) =>
-      audio.equals(audioFile._id)
-    );
+    // const existingAudioFileIndex = playlist.audioFiles.findIndex(
+    //   (audio: mongoose.Types.ObjectId) => audio.equals(audioFile._id)
+    // );
 
-    if (existingAudioFileIndex !== -1) {
-      throw new BadRequestError(
-        'This audio file already exists in the playlist'
-      );
-    }
+    // if (existingAudioFileIndex !== -1) {
+    //   throw new BadRequestError(
+    //     'This audio file already exists in the playlist'
+    //   );
+    // }
 
     playlist.audioFiles.push(audioFile._id);
     playlist.audioFilesCount = playlist.audioFiles.length;

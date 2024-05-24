@@ -83,6 +83,21 @@ const UserProfile = () => {
     resendVerificationRequest();
   };
 
+  const handleDeleteSong = async (songId) => {
+    try {
+      await axios.delete(`/api/content/${songId}`);
+      fetchUserSongs();
+      toast.success('Пісню успішно видалено!');
+    } catch (error) {
+      console.error(error);
+      toast.error('Помилка при видаленні пісні.');
+    }
+  };
+
+  if (!currentUser) {
+    return <Loader />;
+  }
+
   if (!currentUser) {
     return <Loader />;
   }
