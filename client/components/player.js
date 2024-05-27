@@ -1,25 +1,50 @@
-import React, { useEffect, useState, useContext, useRef } from 'react';
+import React, { useEffect, useRef, useContext } from 'react';
 import { PlayerContext } from './player-context';
 
 const Player = ({ content, selectedSong }) => {
-  const [currentSong, setCurrentSong] = useState(content[0] || {});
-  const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(0.5);
-  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef();
-  const { setCurrentSong: contextSetCurrentSong } = useContext(PlayerContext);
+  const {
+    currentSong,
+    setCurrentSong,
+    isPlaying,
+    setIsPlaying,
+    currentTime,
+    setCurrentTime,
+    volume,
+    setVolume,
+    lastPlayedSong,
+  } = useContext(PlayerContext);
 
   useEffect(() => {
     if (selectedSong) {
       setCurrentSong(selectedSong);
     }
-  }, [selectedSong]);
+  }, [selectedSong, setCurrentSong]);
 
   useEffect(() => {
-    if (!content.some((song) => song.id === currentSong.id)) {
+    if (!currentSong && content.length > 0) {
+      setCurrentSong(content[0]);
+    }
+  }, [content, currentSong, setCurrentSong]);
+
+  useEffect(() => {
+    if (!content.some((song) => song.id === currentSong?.id)) {
       setIsPlaying(false);
     }
-  }, [content, currentSong]);
+  }, [content, currentSong, setIsPlaying]);
+
+  useEffect(() => {
+    setIsPlaying(true);
+    if (audioRef.current) {
+      audioRef.current.play();
+    }
+  }, [currentSong, setIsPlaying]);
+
+  useEffect(() => {
+    if (lastPlayedSong) {
+      setCurrentSong(lastPlayedSong);
+    }
+  }, [lastPlayedSong, setCurrentSong]);
 
   const handlePlayPause = () => {
     if (audioRef.current.paused) {
@@ -33,7 +58,7 @@ const Player = ({ content, selectedSong }) => {
 
   const handleSkip = (direction) => {
     const currentIndex = content.findIndex(
-      (song) => song.id === currentSong.id
+      (song) => song.id === currentSong?.id
     );
     const nextIndex =
       direction === 'prev'
@@ -49,7 +74,7 @@ const Player = ({ content, selectedSong }) => {
 
   const handleEnded = () => {
     const currentIndex = content.findIndex(
-      (song) => song.id === currentSong.id
+      (song) => song.id === currentSong?.id
     );
     const nextIndex = (currentIndex + 1) % content.length;
     setCurrentSong(content[nextIndex]);
@@ -58,9 +83,14 @@ const Player = ({ content, selectedSong }) => {
   useEffect(() => {
     if (isPlaying) {
       audioRef.current.play();
-      contextSetCurrentSong(currentSong);
+    } else {
+      audioRef.current.pause();
     }
-  }, [isPlaying, currentSong, contextSetCurrentSong]);
+  }, [isPlaying]);
+
+  useEffect(() => {
+    audioRef.current.volume = volume;
+  }, [volume]);
 
   return (
     <div className="absolute bottom-0 left-0 right-0 p-5 shadow-lg bg-white">
@@ -69,7 +99,7 @@ const Player = ({ content, selectedSong }) => {
           <div>
             <h5 className="text-lg font-medium mb-1">{currentSong?.title}</h5>
             <p className="text-sm">
-              {currentSong?.artist} , {currentSong?.album} , {currentSong?.year}
+              {currentSong?.artist}, {currentSong?.album}, {currentSong?.year}
             </p>
           </div>
         </div>
@@ -100,14 +130,17 @@ const Player = ({ content, selectedSong }) => {
           <div className="flex justify-between items-center w-full gap-3">
             <div className="flex items-center">
               <p className="text-base font-medium text-gray-500">
-                {Math.floor(currentTime / 60)}:{Math.floor(currentTime % 60)}
+                {Math.floor(currentTime / 60)}:
+                {Math.floor(currentTime % 60)
+                  .toString()
+                  .padStart(2, '0')}
               </p>
             </div>
             <input
               type="range"
               className="w-full range pr-6 accent-orange-600"
               min={0}
-              max={Number(currentSong?.duration) * 60}
+              max={currentSong?.duration * 60 || 0}
               value={currentTime}
               onChange={(e) => {
                 audioRef.current.currentTime = e.target.value;

@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import Player from '../components/player';
 import SongsList from '../components/songs-list';
-import { PlayerProvider } from '../components/player-context';
+import { PlayerContext } from '../components/player-context';
 
 const LandingPage = ({ currentUser, content }) => {
-  const [selectedSong, setSelectedSong] = useState(null);
-  const handleSelectSong = (song) => setSelectedSong(song);
+  const { setCurrentSong } = useContext(PlayerContext);
+  const handleSelectSong = (song) => {
+    setCurrentSong(song);
+  };
 
   return (
-    <PlayerProvider>
+    <div>
       <div className="container overflow-y-scroll h-[65vh] p-3">
         <input
           type="text"
@@ -19,16 +21,16 @@ const LandingPage = ({ currentUser, content }) => {
           allSongs={content}
           onSelectSong={handleSelectSong}
           className="mt-[-4]"
+          currentUser={currentUser}
         />
       </div>
-      <Player content={content} selectedSong={selectedSong} />
-    </PlayerProvider>
+      <Player content={content} />
+    </div>
   );
 };
 
 LandingPage.getInitialProps = async (context, client, currentUser) => {
   const { data } = await client.get('/api/content');
-
   return { content: data };
 };
 

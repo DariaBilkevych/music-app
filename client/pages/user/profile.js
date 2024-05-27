@@ -98,10 +98,6 @@ const UserProfile = () => {
     return <Loader />;
   }
 
-  if (!currentUser) {
-    return <Loader />;
-  }
-
   return (
     <div className="py-8 min-h-screen">
       <div className="container mx-auto px-4 flex flex-wrap">
@@ -185,39 +181,41 @@ const UserProfile = () => {
             </form>
           </div>
         </div>
-        <div className="w-full lg:w-1/3 lg:pl-4 mt-8 lg:mt-0">
-          <div className="bg-white shadow-lg rounded-lg p-4">
-            <h3 className="text-lg font-semibold mb-4">
-              Мої завантажені треки
-            </h3>
-            <ul>
-              {songs.map((song) => (
-                <li
-                  key={song.id}
-                  className="mb-2 flex justify-between items-center"
-                >
-                  <div>
-                    <p className="font-semibold">{song.title}</p>
-                    <p className="text-gray-600">
-                      {song.artist} ({song.album})
-                    </p>
-                  </div>
-                  <div className="flex space-x-2">
-                    <Link
-                      href="/content/[audioFileId]"
-                      as={`/content/${song.id}`}
-                    >
-                      <i className="ri-edit-box-line text-gray-600 hover:text-gray-800" />
-                    </Link>
-                    <button onClick={() => handleDeleteSong(song.id)}>
-                      <i className="ri-delete-bin-line text-gray-600 hover:text-gray-800" />
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+        {songs.length > 0 && (
+          <div className="w-full lg:w-1/3 lg:pl-4 mt-8 lg:mt-0">
+            <div className="bg-white shadow-lg rounded-lg p-4">
+              <h3 className="text-lg font-semibold mb-4">
+                Мої завантажені треки
+              </h3>
+              <ul>
+                {songs.map((song) => (
+                  <li
+                    key={song.id}
+                    className="mb-2 flex justify-between items-center"
+                  >
+                    <div>
+                      <p className="font-semibold">{song.title}</p>
+                      <p className="text-gray-600">
+                        {song.artist} ({song.album})
+                      </p>
+                    </div>
+                    <div className="flex space-x-2">
+                      <Link
+                        href="/content/[audioFileId]"
+                        as={`/content/${song.id}`}
+                      >
+                        <i className="ri-edit-box-line text-gray-600 hover:text-gray-800" />
+                      </Link>
+                      <button onClick={() => handleDeleteSong(song.id)}>
+                        <i className="ri-delete-bin-line text-gray-600 hover:text-gray-800" />
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

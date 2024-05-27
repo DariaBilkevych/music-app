@@ -3,6 +3,7 @@ import 'remixicon/fonts/remixicon.css';
 import '../styles/globals.css';
 import { Transition } from '@headlessui/react';
 import { Toaster, ToastIcon, resolveValue } from 'react-hot-toast';
+import { PlayerProvider } from '../components/player-context';
 
 import buildClient from '../api/build-client';
 import Header from '../components/header';
@@ -31,7 +32,9 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
       </Toaster>
       <Header currentUser={currentUser} />
       <div className="container">
-        <Component currentUser={currentUser} {...pageProps} />
+        <PlayerProvider>
+          <Component currentUser={currentUser} {...pageProps} />
+        </PlayerProvider>
       </div>
     </div>
   );

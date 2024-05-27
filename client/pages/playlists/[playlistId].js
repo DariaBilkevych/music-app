@@ -4,7 +4,6 @@ import axios from 'axios';
 import useRequest from '../../hooks/use-request';
 import SongsList from '../../components/songs-list';
 import Player from '../../components/player';
-import { PlayerProvider } from '../../components/player-context';
 
 const PlaylistShow = () => {
   const [playlist, setPlaylist] = useState(null);
@@ -56,64 +55,64 @@ const PlaylistShow = () => {
     setEditing(!editing);
   };
 
-  const handleSelectSong = (song) => setSelectedSong(song);
+  const handleSelectSong = (song) => {
+    setSelectedSong(song);
+  };
 
   useEffect(() => {
     fetchPlaylist();
   }, [router.query]);
 
   return (
-    <PlayerProvider>
-      <div className="container mx-auto px-4 py-8">
-        {playlist ? (
-          <div className="flex flex-col">
-            <div className="flex items-center justify-between mb-4">
-              {editing ? (
-                <input
-                  type="text"
-                  class="border-b border-orange-500 px-3 py-1 focus:outline-none focus:border-none focus:ring-none text-3xl font-bold border-t-0 border-l-0 border-r-0"
-                  value={newPlaylistTitle}
-                  onChange={(e) => setNewPlaylistTitle(e.target.value)}
-                />
-              ) : (
-                <h1 className="text-3xl font-bold">{playlist.title}</h1>
-              )}
-              <div className="flex items-center">
-                <button
-                  className="flex items-center px-4 py-2 border border-orange-400 text-orange-400 rounded-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  onClick={() => router.back()}
-                >
-                  <i className="ri-arrow-left-circle-line text-orange-400 mr-2"></i>
-                  Назад
-                </button>
-                <button
-                  className="flex items-center px-4 py-2 border border-orange-400 text-orange-400 rounded-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300"
-                  onClick={handleEditToggle}
-                >
-                  {editing ? (
-                    <>Зберегти</>
-                  ) : (
-                    <>
-                      <i className="ri-edit-2-line mr-2" />
-                      Редагувати плейлисти
-                    </>
-                  )}
-                </button>
-              </div>
+    <div className="container mx-auto px-4 py-8">
+      {playlist ? (
+        <div className="flex flex-col">
+          <div className="flex items-center justify-between mb-4">
+            {editing ? (
+              <input
+                type="text"
+                class="border-b border-orange-500 px-3 py-1 focus:outline-none focus:border-none focus:ring-none text-3xl font-bold border-t-0 border-l-0 border-r-0"
+                value={newPlaylistTitle}
+                onChange={(e) => setNewPlaylistTitle(e.target.value)}
+              />
+            ) : (
+              <h1 className="text-3xl font-bold">{playlist.title}</h1>
+            )}
+            <div className="flex items-center">
+              <button
+                className="flex items-center px-4 py-2 border border-orange-400 text-orange-400 rounded-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                onClick={() => router.back()}
+              >
+                <i className="ri-arrow-left-circle-line text-orange-400 mr-2"></i>
+                Назад
+              </button>
+              <button
+                className="flex items-center px-4 py-2 border border-orange-400 text-orange-400 rounded-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300"
+                onClick={handleEditToggle}
+              >
+                {editing ? (
+                  <>Зберегти</>
+                ) : (
+                  <>
+                    <i className="ri-edit-2-line mr-2" />
+                    Редагувати плейлисти
+                  </>
+                )}
+              </button>
             </div>
-            <SongsList
-              allSongs={playlist.audioFiles}
-              onSelectSong={handleSelectSong}
-              onDeleteSong={handleDeleteSong}
-              isEditing={editing}
-            />
-            <Player content={playlist.audioFiles} selectedSong={selectedSong} />
           </div>
-        ) : (
-          <div>Loading...</div>
-        )}
-      </div>
-    </PlayerProvider>
+          <SongsList
+            allSongs={playlist.audioFiles}
+            onSelectSong={handleSelectSong}
+            onDeleteSong={handleDeleteSong}
+            isEditing={editing}
+          />
+          <Player content={playlist.audioFiles} selectedSong={selectedSong} />
+        </div>
+      ) : (
+        <div>Loading...</div>
+      )}
+    </div>
   );
 };
 

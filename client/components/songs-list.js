@@ -1,10 +1,16 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { PlayerContext } from './player-context';
-import PlaylistListModal from './playlists-list-modal';
+import AddToPlaylistModal from './add-to-playlist-modal';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
-const SongsList = ({ allSongs, onSelectSong, onDeleteSong, isEditing }) => {
+const SongsList = ({
+  allSongs,
+  onSelectSong,
+  onDeleteSong,
+  isEditing,
+  currentUser,
+}) => {
   const { currentSong } = useContext(PlayerContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSong, setSelectedSong] = useState(null);
@@ -113,7 +119,7 @@ const SongsList = ({ allSongs, onSelectSong, onDeleteSong, isEditing }) => {
           </button>
         </div>
       ))}
-      <PlaylistListModal
+      <AddToPlaylistModal
         playlists={playlists}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -121,6 +127,7 @@ const SongsList = ({ allSongs, onSelectSong, onDeleteSong, isEditing }) => {
         selectedPlaylists={selectedPlaylists}
         setSelectedPlaylists={setSelectedPlaylists}
         selectedSong={selectedSong}
+        currentUser={currentUser}
       />
     </div>
   );
