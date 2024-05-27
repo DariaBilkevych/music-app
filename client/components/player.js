@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import { PlayerContext } from './player-context';
+import axios from 'axios';
 
 const Player = ({ content, selectedSong }) => {
   const audioRef = useRef();
@@ -12,8 +13,15 @@ const Player = ({ content, selectedSong }) => {
     setCurrentTime,
     volume,
     setVolume,
-    lastPlayedSong,
   } = useContext(PlayerContext);
+
+  const recordPlayback = async (audioFileId) => {
+    try {
+      await axios.post('/api/statistics/playback', { audioFileId });
+    } catch (error) {
+      console.error('Error recording playback:', error);
+    }
+  };
 
   useEffect(() => {
     if (selectedSong) {
@@ -22,29 +30,18 @@ const Player = ({ content, selectedSong }) => {
   }, [selectedSong, setCurrentSong]);
 
   useEffect(() => {
-    if (!currentSong && content.length > 0) {
-      setCurrentSong(content[0]);
-    }
-  }, [content, currentSong, setCurrentSong]);
-
-  useEffect(() => {
     if (!content.some((song) => song.id === currentSong?.id)) {
       setIsPlaying(false);
     }
   }, [content, currentSong, setIsPlaying]);
 
   useEffect(() => {
-    setIsPlaying(true);
-    if (audioRef.current) {
+    if (currentSong) {
+      setIsPlaying(true);
       audioRef.current.play();
+      recordPlayback(currentSong.id); // Record playback when a new song starts
     }
   }, [currentSong, setIsPlaying]);
-
-  useEffect(() => {
-    if (lastPlayedSong) {
-      setCurrentSong(lastPlayedSong);
-    }
-  }, [lastPlayedSong, setCurrentSong]);
 
   const handlePlayPause = () => {
     if (audioRef.current.paused) {
@@ -93,13 +90,21 @@ const Player = ({ content, selectedSong }) => {
   }, [volume]);
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 p-5 shadow-lg bg-white">
+    <div
+      className={`absolute bottom-0 left-0 right-0 p-5 shadow-lg bg-white ${
+        !currentSong && 'pointer-events-none opacity-50'
+      }`}
+    >
       <div className="flex justify-between items-center border rounded-md p-2">
         <div className="flex items-center w-1/3">
           <div>
-            <h5 className="text-lg font-medium mb-1">{currentSong?.title}</h5>
+            <h5 className="text-lg font-medium mb-1">
+              {currentSong ? currentSong.title : '--.--'}
+            </h5>
             <p className="text-sm">
-              {currentSong?.artist}, {currentSong?.album}, {currentSong?.year}
+              {currentSong
+                ? `${currentSong.artist}, ${currentSong.album}, ${currentSong.year}`
+                : '--.--'}
             </p>
           </div>
         </div>
@@ -149,7 +154,7 @@ const Player = ({ content, selectedSong }) => {
             />
             <div className="flex items-center">
               <p className="text-base font-medium text-gray-500">
-                {currentSong?.duration}
+                {currentSong ? currentSong.duration : '-.-'}
               </p>
             </div>
           </div>

@@ -32,6 +32,13 @@ spec:
                 name: playlists-srv
                 port:
                   number: 3000
+          - path: /api/statistics/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: statistics-srv
+                port:
+                  number: 3000
           - path: /?(.*)
             pathType: ImplementationSpecific
             backend:

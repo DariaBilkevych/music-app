@@ -15,7 +15,7 @@ router.post(
   [
     body('title')
       .trim()
-      .isLength({ min: 1, max: 10 })
+      .isLength({ min: 1, max: 20 })
       .withMessage(
         'Назва плейлиста є обов’язковою і має бути від 1 до 10 символів'
       ),
