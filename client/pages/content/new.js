@@ -161,4 +161,5 @@ const NewAudioFile = () => {
   );
 };
 
+NewAudioFile.excludePlayer = true;
 export default NewAudioFile;

@@ -1,13 +1,16 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import Player from '../components/player';
 import SongsList from '../components/songs-list';
 import { PlayerContext } from '../components/player-context';
 
 const LandingPage = ({ currentUser, content }) => {
-  const { setCurrentSong } = useContext(PlayerContext);
+  const { setCurrentSong, setContent } = useContext(PlayerContext);
   const handleSelectSong = (song) => {
     setCurrentSong(song);
   };
+  useEffect(() => {
+    setContent(content);
+  });
 
   return (
     <div>
@@ -24,7 +27,6 @@ const LandingPage = ({ currentUser, content }) => {
           currentUser={currentUser}
         />
       </div>
-      <Player content={content} />
     </div>
   );
 };

@@ -9,6 +9,8 @@ export const PlayerContext = React.createContext({
   setCurrentTime: (currentTime) => {},
   volume: 0.5,
   setVolume: (volume) => {},
+  content: [],
+  setContent: (content) => {},
 });
 
 export const PlayerProvider = ({ children }) => {
@@ -16,7 +18,7 @@ export const PlayerProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(0.5);
-  const [contentSource, setContentSource] = useState(null);
+  const [content, setContent] = useState([]);
 
   return (
     <PlayerContext.Provider
@@ -29,8 +31,8 @@ export const PlayerProvider = ({ children }) => {
         setCurrentTime,
         volume,
         setVolume,
-        contentSource,
-        setContentSource,
+        content,
+        setContent,
       }}
     >
       {children}

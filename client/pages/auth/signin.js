@@ -3,7 +3,7 @@ import Router from 'next/router';
 import useRequest from '../../hooks/use-request';
 import Link from 'next/link';
 
-export default () => {
+const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -105,3 +105,6 @@ export default () => {
     </div>
   );
 };
+
+Signin.excludePlayer = true;
+export default Signin;

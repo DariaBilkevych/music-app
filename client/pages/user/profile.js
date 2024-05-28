@@ -221,4 +221,5 @@ const UserProfile = () => {
   );
 };
 
+UserProfile.excludePlayer = true;
 export default UserProfile;

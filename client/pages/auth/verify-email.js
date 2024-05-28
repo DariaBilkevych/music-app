@@ -23,4 +23,5 @@ const VerifyEmail = () => {
   );
 };
 
+VerifyEmail.excludePlayer = true;
 export default VerifyEmail;

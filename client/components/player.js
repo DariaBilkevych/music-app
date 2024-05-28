@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useContext } from 'react';
 import { PlayerContext } from './player-context';
 import axios from 'axios';
 
-const Player = ({ content, selectedSong }) => {
+const Player = () => {
   const audioRef = useRef();
   const {
     currentSong,
@@ -13,6 +13,7 @@ const Player = ({ content, selectedSong }) => {
     setCurrentTime,
     volume,
     setVolume,
+    content,
   } = useContext(PlayerContext);
 
   const recordPlayback = async (audioFileId) => {
@@ -24,19 +25,7 @@ const Player = ({ content, selectedSong }) => {
   };
 
   useEffect(() => {
-    if (selectedSong) {
-      setCurrentSong(selectedSong);
-    }
-  }, [selectedSong, setCurrentSong]);
-
-  useEffect(() => {
-    if (!content.some((song) => song.id === currentSong?.id)) {
-      setIsPlaying(false);
-    }
-  }, [content, currentSong, setIsPlaying]);
-
-  useEffect(() => {
-    if (currentSong) {
+    if (currentSong && audioRef.current) {
       setIsPlaying(true);
       audioRef.current.play();
       recordPlayback(currentSong.id); // Record playback when a new song starts
@@ -45,11 +34,11 @@ const Player = ({ content, selectedSong }) => {
 
   const handlePlayPause = () => {
     if (audioRef.current.paused) {
-      audioRef.current.play();
       setIsPlaying(true);
+      audioRef.current.play();
     } else {
-      audioRef.current.pause();
       setIsPlaying(false);
+      audioRef.current.pause();
     }
   };
 
@@ -76,14 +65,6 @@ const Player = ({ content, selectedSong }) => {
     const nextIndex = (currentIndex + 1) % content.length;
     setCurrentSong(content[nextIndex]);
   };
-
-  useEffect(() => {
-    if (isPlaying) {
-      audioRef.current.play();
-    } else {
-      audioRef.current.pause();
-    }
-  }, [isPlaying]);
 
   useEffect(() => {
     audioRef.current.volume = volume;

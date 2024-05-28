@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import useRequest from '../../hooks/use-request';
 import SongsList from '../../components/songs-list';
-import Player from '../../components/player';
+import Loader from '../../components/loader';
+import { PlayerContext } from '../../components/player-context';
 
 const PlaylistShow = () => {
   const [playlist, setPlaylist] = useState(null);
   const [newPlaylistTitle, setNewPlaylistTitle] = useState('');
   const [editing, setEditing] = useState(false);
-  const [selectedSong, setSelectedSong] = useState(null);
+  // const [selectedSong, setSelectedSong] = useState(null);
+  const { setCurrentSong, setContent } = useContext(PlayerContext);
 
   const router = useRouter();
   const { playlistId } = router.query;
@@ -56,8 +58,15 @@ const PlaylistShow = () => {
   };
 
   const handleSelectSong = (song) => {
-    setSelectedSong(song);
+    // setSelectedSong(song);
+    setCurrentSong(song);
   };
+
+  useEffect(() => {
+    if (playlist) {
+      setContent(playlist.audioFiles);
+    }
+  }, [playlist]);
 
   useEffect(() => {
     fetchPlaylist();
@@ -107,10 +116,9 @@ const PlaylistShow = () => {
             onDeleteSong={handleDeleteSong}
             isEditing={editing}
           />
-          <Player content={playlist.audioFiles} selectedSong={selectedSong} />
         </div>
       ) : (
-        <div>Loading...</div>
+        <Loader />
       )}
     </div>
   );

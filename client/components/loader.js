@@ -8,4 +8,5 @@ const Loader = () => {
   );
 };
 
+Loader.excludePlayer = true;
 export default Loader;

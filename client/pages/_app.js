@@ -7,8 +7,10 @@ import { PlayerProvider } from '../components/player-context';
 
 import buildClient from '../api/build-client';
 import Header from '../components/header';
+import Player from '../components/player';
 
 const AppComponent = ({ Component, pageProps, currentUser }) => {
+  const excludePlayer = Component.excludePlayer || false;
   return (
     <div>
       <Toaster position="top-center" reverseOrder={true}>
@@ -34,6 +36,7 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
       <div className="container">
         <PlayerProvider>
           <Component currentUser={currentUser} {...pageProps} />
+          {!excludePlayer && <Player />}
         </PlayerProvider>
       </div>
     </div>
