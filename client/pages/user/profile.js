@@ -6,6 +6,8 @@ import useRequest from '../../hooks/use-request';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 import Loader from '../../components/loader';
+import TopArtistsChart from '../../components/top-artist-chart';
+import UserListeningChart from '../../components/user-listening-chart';
 
 const UserProfile = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -101,7 +103,7 @@ const UserProfile = () => {
   return (
     <div className="py-8 min-h-screen">
       <div className="container mx-auto px-4 flex flex-wrap">
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-3xl mx-auto p-4 w-full lg:w-2/3">
+        <div className="bg-white shadow-lg rounded-lg mx-auto p-4 w-full lg:w-2/3">
           <div className="flex items-center p-4 border-b border-gray-200">
             <img
               src={avatarUrl}
@@ -216,6 +218,18 @@ const UserProfile = () => {
             </div>
           </div>
         )}
+        <div className="container mx-auto px-4 flex flex-wrap justify-between mt-8">
+          <div className="w-full lg:w-1/3 p-2 flex flex-col min-h-full">
+            <div className="flex-grow">
+              <TopArtistsChart />
+            </div>
+          </div>
+          <div className="w-full lg:w-2/3 p-2 flex flex-col min-h-full">
+            <div className="flex-grow">
+              <UserListeningChart />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

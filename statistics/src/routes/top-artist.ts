@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import { requireAuth, BadRequestError } from '@dbmusicapp/common';
 import { Listening } from '../models/listening';
-import moment from 'moment';
+import moment from 'moment-timezone';
 
 const router = express.Router();
 
@@ -10,26 +10,32 @@ router.get(
   requireAuth,
   async (req: Request, res: Response) => {
     const userId = req.currentUser!.id;
-    const { period } = req.query;
-    let startDate, endDate;
+    const period = req.query.period as string;
+    let startDate, startDateString, endDate, endDateString;
 
-    if (period === 'day') {
-      startDate = moment().startOf('day');
-      endDate = moment().endOf('day');
-    } else if (period === 'week') {
-      startDate = moment().startOf('week');
-      endDate = moment().endOf('week');
-    } else if (period === 'month') {
-      startDate = moment().startOf('month');
-      endDate = moment().endOf('month');
-    } else if (period === 'year') {
-      startDate = moment().startOf('year');
-      endDate = moment().endOf('year');
+    const periodOptions = {
+      day: 'day',
+      week: 'week',
+      month: 'month',
+      year: 'year',
+    };
+
+    if (periodOptions.hasOwnProperty(period)) {
+      let periodType: moment.unitOfTime.StartOf =
+        period as moment.unitOfTime.StartOf;
+      startDateString = moment
+        .tz('Europe/Kiev')
+        .startOf(periodType)
+        .format('YYYY-MM-DDTHH:mm:ss');
+      endDateString = moment
+        .tz('Europe/Kiev')
+        .endOf(periodType)
+        .format('YYYY-MM-DDTHH:mm:ss');
+      startDate = new Date(startDateString);
+      endDate = new Date(endDateString);
     } else {
       throw new BadRequestError('Invalid period');
     }
-
-    console.log(startDate, endDate);
 
     const topArtists = await Listening.aggregate([
       {
@@ -37,8 +43,8 @@ router.get(
           userId,
           timestamps: {
             $elemMatch: {
-              $gte: startDate.toDate(),
-              $lte: endDate.toDate(),
+              $gte: startDate,
+              $lte: endDate,
             },
           },
         },
@@ -60,8 +66,8 @@ router.get(
       {
         $match: {
           timestamps: {
-            $gte: startDate.toDate(),
-            $lte: endDate.toDate(),
+            $gte: startDate,
+            $lte: endDate,
           },
         },
       },
@@ -71,6 +77,31 @@ router.get(
           totalPlayCount: {
             $sum: 1,
           },
+        },
+      },
+      {
+        $addFields: {
+          startDate: {
+            $dateToString: {
+              format: '%d-%m-%Y',
+              date: startDate,
+            },
+          },
+          endDate: {
+            $dateToString: {
+              format: '%d-%m-%Y',
+              date: endDate,
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          artist: '$_id',
+          totalPlayCount: 1,
+          startDate: 1,
+          endDate: 1,
         },
       },
       {

@@ -184,4 +184,5 @@ const UpdateSong = () => {
   );
 };
 
+UpdateSong.excludePlayer = true;
 export default UpdateSong;

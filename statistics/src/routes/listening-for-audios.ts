@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import { requireAuth } from '@dbmusicapp/common';
 import { Listening } from '../models/listening';
-import moment from 'moment';
 
 const router = express.Router();
 
@@ -36,11 +35,34 @@ router.get(
           _id: {
             title: '$audioFile.title',
             date: {
-              $dateToString: { format: '%Y-%m-%d', date: '$timestamps' },
+              $dateToString: { format: '%d-%m-%Y', date: '$timestamps' },
             },
           },
           firstDate: { $min: '$timestamps' },
           playCount: { $sum: 1 },
+        },
+      },
+      {
+        $group: {
+          _id: '$_id.title',
+          dates: {
+            $push: {
+              date: '$_id.date',
+              playCount: '$playCount',
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          title: '$_id',
+          dates: {
+            $sortArray: {
+              input: '$dates',
+              sortBy: { date: 1 },
+            },
+          },
         },
       },
     ]);

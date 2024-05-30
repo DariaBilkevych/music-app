@@ -6,6 +6,7 @@ import {
   validateRequest,
 } from '@dbmusicapp/common';
 import { Listening } from '../models/listening';
+import moment from 'moment-timezone';
 
 const router = express.Router();
 
@@ -14,6 +15,10 @@ router.post(
   requireAuth,
   async (req: Request, res: Response) => {
     const { audioFileId } = req.body;
+    const localTimeString = moment
+      .tz('Europe/Kiev')
+      .format('YYYY-MM-DDTHH:mm:ss');
+    const localTime = new Date(localTimeString);
 
     let listening = await Listening.findOne({
       userId: req.currentUser!.id,
@@ -24,11 +29,11 @@ router.post(
       listening = Listening.build({
         userId: req.currentUser!.id,
         audioFileId,
-        timestamps: [new Date()],
+        timestamps: [localTime],
         playCount: 1,
       });
     } else {
-      listening.timestamps.push(new Date());
+      listening.timestamps.push(localTime);
       listening.playCount++;
     }
 
