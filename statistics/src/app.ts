@@ -4,8 +4,10 @@ import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 import { currentUser, errorHandler, NotFoundError } from '@dbmusicapp/common';
 
-import { savePlaybackRouter } from './routes/save';
+import { createPlaybackRouter } from './routes/create-playback';
 import { showPlaybacksRouter } from './routes/show-playbacks';
+import { topArtistsRouter } from './routes/top-artist';
+import { listeningStatsForAudiosRouter } from './routes/listening-for-audios';
 
 const app = express();
 app.set('trust proxy', true);
@@ -18,8 +20,10 @@ app.use(
 );
 app.use(currentUser);
 
-app.use(savePlaybackRouter);
+app.use(createPlaybackRouter);
 app.use(showPlaybacksRouter);
+app.use(topArtistsRouter);
+app.use(listeningStatsForAudiosRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();

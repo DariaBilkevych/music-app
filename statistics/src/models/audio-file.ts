@@ -9,6 +9,7 @@ interface AudioFileAttrs {
   year: number;
   duration: number;
   src: string;
+  userId: string;
 }
 
 export interface AudioFileDoc extends mongoose.Document {
@@ -18,6 +19,7 @@ export interface AudioFileDoc extends mongoose.Document {
   year: number;
   duration: number;
   src: string;
+  userId: string;
   version: number;
 }
 
@@ -25,42 +27,36 @@ interface AudioFileModel extends mongoose.Model<AudioFileDoc> {
   build(attr: AudioFileAttrs): AudioFileDoc;
 }
 
-const audioFileSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-    },
-    artist: {
-      type: String,
-      required: true,
-    },
-    album: {
-      type: String,
-      required: true,
-    },
-    year: {
-      type: Number,
-      required: true,
-    },
-    duration: {
-      type: Number,
-      required: true,
-    },
-    src: {
-      type: String,
-      required: true,
-    },
+const audioFileSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
   },
-  {
-    toJSON: {
-      transform(doc, ret) {
-        ret.id = ret._id;
-        delete ret._id;
-      },
-    },
-  }
-);
+  artist: {
+    type: String,
+    required: true,
+  },
+  album: {
+    type: String,
+    required: true,
+  },
+  year: {
+    type: Number,
+    required: true,
+  },
+  duration: {
+    type: Number,
+    required: true,
+  },
+  src: {
+    type: String,
+    required: true,
+  },
+  userId: {
+    type: String,
+    required: true,
+  },
+});
 
 audioFileSchema.set('versionKey', 'version');
 audioFileSchema.plugin(updateIfCurrentPlugin);
@@ -74,6 +70,7 @@ audioFileSchema.statics.build = (attrs: AudioFileAttrs) => {
     year: attrs.year,
     duration: attrs.duration,
     src: attrs.src,
+    userId: attrs.userId,
   });
 };
 

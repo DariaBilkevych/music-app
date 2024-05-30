@@ -21,6 +21,8 @@
     "express-async-errors": "^3.1.1",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "mongoose": "^8.2.1",
     "mongoose-update-if-current": "^1.4.0",
     "node-nats-streaming": "^0.3.2",

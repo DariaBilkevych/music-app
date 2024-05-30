@@ -15,16 +15,26 @@ router.post(
   async (req: Request, res: Response) => {
     const { audioFileId } = req.body;
 
-    const listening = Listening.build({
+    let listening = await Listening.findOne({
       userId: req.currentUser!.id,
       audioFileId,
-      timestamp: new Date(),
-    });
+    }).populate('audioFileId');
 
-    await listening.populate('audioFileId');
+    if (!listening) {
+      listening = Listening.build({
+        userId: req.currentUser!.id,
+        audioFileId,
+        timestamps: [new Date()],
+        playCount: 1,
+      });
+    } else {
+      listening.timestamps.push(new Date());
+      listening.playCount++;
+    }
+
     await listening.save();
     res.status(201).send(listening);
   }
 );
 
-export { router as savePlaybackRouter };
+export { router as createPlaybackRouter };

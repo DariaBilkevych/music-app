@@ -1,5 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
-import Player from '../components/player';
+import { useContext, useEffect } from 'react';
 import SongsList from '../components/songs-list';
 import { PlayerContext } from '../components/player-context';
 
