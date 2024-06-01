@@ -25,27 +25,32 @@ const UserListeningChart = () => {
   };
 
   listeningData.forEach((track) => {
-    chartData.labels = Array.from(
-      new Set([...chartData.labels, ...track.dates.map((date) => date.date)])
-    );
-    const playCountData = Array.from({ length: chartData.labels.length }).fill(
-      0
-    );
-    track.dates.forEach((date) => {
-      const index = chartData.labels.indexOf(date.date);
-      playCountData[index] += date.playCount;
-    });
-    chartData.datasets.push({
-      label: track.title,
-      data: playCountData,
-      fill: false,
-      backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-        Math.random() * 255
-      )}, ${Math.floor(Math.random() * 255)}, 0.4)`,
-      borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-        Math.random() * 255
-      )}, ${Math.floor(Math.random() * 255)}, 1)`,
-    });
+    if (track.dates.length > 0) {
+      chartData.labels = Array.from(
+        new Set([...chartData.labels, ...track.dates.map((date) => date.date)])
+      );
+      const playCountData = Array.from({
+        length: chartData.labels.length,
+      }).fill(0);
+      track.dates.forEach((date) => {
+        const index = chartData.labels.indexOf(date.date);
+        playCountData[index] += date.playCount;
+      });
+      chartData.datasets.push({
+        label: track.title,
+        data: playCountData,
+        fill: false,
+        backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
+          Math.random() * 255
+        )}, ${Math.floor(Math.random() * 255)}, 0.4)`,
+        borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
+          Math.random() * 255
+        )}, ${Math.floor(Math.random() * 255)}, 1)`,
+      });
+    } else {
+      // Handle tracks with no listening data
+      console.warn(`Трек "${track.title}" не має жодного прослуховування.`);
+    }
   });
 
   const options = {
@@ -67,18 +72,39 @@ const UserListeningChart = () => {
       legend: {
         position: 'right',
       },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const title = context.dataset.label;
+            const value = context.dataset.data[context.dataIndex];
+            return `${title} - ${value} прослуховувань`;
+          },
+        },
+      },
     },
   };
 
   return (
     <div className="mt-8 bg-white rounded-lg p-4 shadow-lg">
       <div className="mb-4">
-        <h3 className="text-xl font-semibold text-center mb-4">
+        <h3 className="text-xl font-semibold text-center mb-2">
           Графік прослуховувань власних треків
         </h3>
-        <div className="rounded-lg">
-          <Line data={chartData} options={options} />
-        </div>
+        {chartData.datasets.length > 0 && (
+          <p className="text-center text-gray-600 text-sm p-3">
+            * На цьому графіку відображаються лише треки, що мають
+            прослуховування.
+          </p>
+        )}
+        {chartData.datasets.length > 0 ? (
+          <div className="rounded-lg">
+            <Line data={chartData} options={options} />
+          </div>
+        ) : (
+          <p className="text-center text-gray-500">
+            На жаль, у вас ще немає прослуховувань жодного треку.
+          </p>
+        )}
       </div>
     </div>
   );

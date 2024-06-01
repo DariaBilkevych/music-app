@@ -104,7 +104,7 @@ const SongsList = ({
           <div className="col">
             <h5 className="text-xl font-bold">{song.title}</h5>
             <h5 className="text-gray-500 text-sm">
-              {song.artist}, {song.album}, {song.year}
+              {song.artist}, {song.year}
             </h5>
           </div>
           <div className="col text-end">

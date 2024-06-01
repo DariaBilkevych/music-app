@@ -8,12 +8,12 @@ export class ContentCreatedListener extends Listener<ContentCreatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: ContentCreatedEvent['data'], msg: Message) {
-    const { id, title, artist, album, year, duration, src, userId } = data;
+    const { id, title, artist, genre, year, duration, src, userId } = data;
     const audioFile = AudioFile.build({
       id,
       title,
       artist,
-      album,
+      genre,
       year,
       duration,
       src,

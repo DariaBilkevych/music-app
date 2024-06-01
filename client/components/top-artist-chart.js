@@ -107,10 +107,18 @@ const TopArtistsChart = () => {
           </button>
         </div>
       </div>
-      <div className="text-center mb-4 text-gray-500">{dateRange}</div>
-      <div className="flex justify-center">
-        <Doughnut data={chartData} options={options} />
-      </div>
+      {topArtistsData.length === 0 ? (
+        <div className="text-center text-gray-500">
+          Немає даних про прослуховування за обраний період
+        </div>
+      ) : (
+        <>
+          <div className="text-center mb-4 text-gray-500">{dateRange}</div>
+          <div className="flex justify-center">
+            <Doughnut data={chartData} options={options} />
+          </div>
+        </>
+      )}
     </div>
   );
 };

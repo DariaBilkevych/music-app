@@ -198,7 +198,7 @@ const UserProfile = () => {
                     <div>
                       <p className="font-semibold">{song.title}</p>
                       <p className="text-gray-600">
-                        {song.artist} ({song.album})
+                        {song.artist} ({song.genre.join(', ')})
                       </p>
                     </div>
                     <div className="flex space-x-2">
@@ -218,17 +218,23 @@ const UserProfile = () => {
             </div>
           </div>
         )}
-        <div className="container mx-auto px-4 flex flex-wrap justify-between mt-8">
+        <div
+          className={`container mx-auto px-4 flex flex-wrap justify-${
+            songs.length > 0 ? 'between' : 'center'
+          } mt-8`}
+        >
           <div className="w-full lg:w-1/3 p-2 flex flex-col min-h-full">
             <div className="flex-grow">
               <TopArtistsChart />
             </div>
           </div>
-          <div className="w-full lg:w-2/3 p-2 flex flex-col min-h-full">
-            <div className="flex-grow">
-              <UserListeningChart />
+          {songs.length > 0 && (
+            <div className="w-full lg:w-2/3 p-2 flex flex-col min-h-full">
+              <div className="flex-grow">
+                <UserListeningChart />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

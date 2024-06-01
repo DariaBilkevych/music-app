@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: Object.values(UserRoles),
-      default: UserRoles.Admin,
+      default: UserRoles.User,
     },
     emailVerified: {
       type: Boolean,

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import Loader from '../../components/loader';
 import useRequest from '../../hooks/use-request';
+import { Genre } from '@dbmusicapp/common';
 
 const UpdateSong = () => {
   const router = useRouter();
@@ -12,7 +13,7 @@ const UpdateSong = () => {
   const [song, setSong] = useState({
     title: '',
     artist: '',
-    album: '',
+    genre: [],
     year: '',
     duration: '',
     src: '',
@@ -31,7 +32,7 @@ const UpdateSong = () => {
       setSong({
         title: data.title,
         artist: data.artist,
-        album: data.album,
+        genre: data.genre,
         year: data.year,
         duration: data.duration,
         src: data.src,
@@ -59,9 +60,12 @@ const UpdateSong = () => {
     const formData = new FormData();
     formData.append('title', song.title);
     formData.append('artist', song.artist);
-    formData.append('album', song.album);
     formData.append('year', song.year);
     formData.append('duration', song.duration);
+
+    song.genre.forEach((genre, index) => {
+      formData.append(`genre[${index}]`, genre);
+    });
 
     try {
       doRequest(formData);
@@ -113,18 +117,31 @@ const UpdateSong = () => {
         </div>
         <div>
           <label
-            htmlFor="album"
+            htmlFor="genre"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Альбом
+            Жанр
           </label>
-          <input
-            type="text"
-            id="album"
-            value={song.album}
-            onChange={(e) => setSong({ ...song, album: e.target.value })}
+          <select
+            id="genre"
+            multiple
+            value={song.genre}
+            onChange={(e) =>
+              setSong({
+                ...song,
+                genre: [...e.target.selectedOptions].map(
+                  (option) => option.value
+                ),
+              })
+            }
             className="w-full appearance-none border rounded py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-          />
+          >
+            {Object.values(Genre).map((genre, index) => (
+              <option key={index} value={genre}>
+                {genre}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label

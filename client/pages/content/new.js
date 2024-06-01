@@ -4,13 +4,14 @@ import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import useRequest from '../../hooks/use-request';
 import Loader from '../../components/loader';
+import { Genre } from '@dbmusicapp/common';
 
 const NewAudioFile = () => {
   const [loading, setLoading] = useState(false);
   const [song, setSong] = useState({
     title: '',
     artist: '',
-    album: '',
+    genre: [],
     year: '',
     duration: '',
     file: '',
@@ -41,9 +42,12 @@ const NewAudioFile = () => {
     const formData = new FormData();
     formData.append('title', song.title);
     formData.append('artist', song.artist);
-    formData.append('album', song.album);
     formData.append('year', song.year);
     formData.append('duration', song.duration);
+
+    song.genre.forEach((genre, index) => {
+      formData.append(`genre[${index}]`, genre);
+    });
 
     if (song.file) {
       formData.append('file', song.file);
@@ -91,18 +95,31 @@ const NewAudioFile = () => {
         </div>
         <div>
           <label
-            htmlFor="album"
+            htmlFor="genre"
             className="block text-sm font-medium text-gray-700 mb-1"
           >
-            Альбом
+            Жанр (можна обрати декілька)
           </label>
-          <input
-            type="text"
-            id="album"
-            value={song.album}
-            onChange={(e) => setSong({ ...song, album: e.target.value })}
+          <select
+            id="genre"
+            multiple
+            value={song.genre}
+            onChange={(e) =>
+              setSong({
+                ...song,
+                genre: [...e.target.selectedOptions].map(
+                  (option) => option.value
+                ),
+              })
+            }
             className="w-full appearance-none border rounded py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-          />
+          >
+            {Object.values(Genre).map((genre, index) => (
+              <option key={index} value={genre}>
+                {genre}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label

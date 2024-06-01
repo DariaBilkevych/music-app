@@ -18,8 +18,8 @@ export class ContentUpdatedListener extends Listener<ContentUpdatedEvent> {
       throw new Error('Audiofile not found!');
     }
 
-    const { title, artist, album, year, duration, src } = data;
-    audioFile.set({ title, artist, album, year, duration, src });
+    const { title, artist, genre, year, duration, src } = data;
+    audioFile.set({ title, artist, genre, year, duration, src });
     await audioFile.save();
 
     msg.ack();

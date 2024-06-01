@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
+import { Genre } from '@dbmusicapp/common';
 
 interface AudioFileAttrs {
   id: string;
   title: string;
   artist: string;
-  album: string;
+  genre: Genre[];
   year: number;
   duration: number;
   src: string;
@@ -14,7 +15,7 @@ interface AudioFileAttrs {
 export interface AudioFileDoc extends mongoose.Document {
   title: string;
   artist: string;
-  album: string;
+  genre: Genre[];
   year: number;
   duration: number;
   src: string;
@@ -35,8 +36,14 @@ const audioFileSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    album: {
-      type: String,
+    genre: {
+      type: [
+        {
+          type: String,
+          enum: Object.values(Genre),
+          required: true,
+        },
+      ],
       required: true,
     },
     year: {
@@ -70,7 +77,7 @@ audioFileSchema.statics.build = (attrs: AudioFileAttrs) => {
     _id: attrs.id,
     title: attrs.title,
     artist: attrs.artist,
-    album: attrs.album,
+    genre: attrs.genre,
     year: attrs.year,
     duration: attrs.duration,
     src: attrs.src,

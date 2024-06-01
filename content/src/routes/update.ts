@@ -11,6 +11,7 @@ import fs from 'fs';
 import { body } from 'express-validator';
 import { ContentUpdatedPublisher } from '../events/publishers/content-updated-publisher';
 import { natsWrapper } from '../nats-wrapper';
+import { Genre } from '@dbmusicapp/common';
 
 const router = express.Router();
 
@@ -46,12 +47,18 @@ router.put(
       .withMessage(
         'Виконавець є обов’язковим та повинен містити від 1 до 50 символів'
       ),
-    body('album')
-      .trim()
-      .isLength({ min: 1, max: 20 })
-      .withMessage(
-        'Альбом є обов’язковим та повинен містити від 1 до 20 символів'
-      ),
+    body('genre')
+      .isArray({ min: 1 })
+      .withMessage('Потрібно вибрати хоча б один жанр')
+      .custom((value: any[]) => {
+        const genres = Object.values(Genre);
+        value.forEach((genre) => {
+          if (!genres.includes(genre as Genre)) {
+            throw new Error(`Жанр "${genre}" недійсний`);
+          }
+        });
+        return true;
+      }),
     body('year')
       .isInt({ min: 1900, max: new Date().getFullYear() })
       .withMessage('Рік випуску має бути від 1900 до поточного року'),
@@ -87,7 +94,7 @@ router.put(
         id: audioFile.id,
         title: audioFile.title,
         artist: audioFile.artist,
-        album: audioFile.album,
+        genre: audioFile.genre,
         year: audioFile.year,
         duration: audioFile.duration,
         src: audioFile.src,

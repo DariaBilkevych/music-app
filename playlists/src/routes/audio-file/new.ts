@@ -33,16 +33,6 @@ router.post(
       throw new NotFoundError();
     }
 
-    // const existingAudioFileIndex = playlist.audioFiles.findIndex(
-    //   (audio: mongoose.Types.ObjectId) => audio.equals(audioFile._id)
-    // );
-
-    // if (existingAudioFileIndex !== -1) {
-    //   throw new BadRequestError(
-    //     'This audio file already exists in the playlist'
-    //   );
-    // }
-
     playlist.audioFiles.push(audioFile._id);
     playlist.audioFilesCount = playlist.audioFiles.length;
     await playlist.save();
