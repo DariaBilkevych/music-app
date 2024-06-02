@@ -84,7 +84,7 @@ const Player = () => {
             </h5>
             <p className="text-sm">
               {currentSong
-                ? `${currentSong.artist}, ${currentSong.album}, ${currentSong.year}`
+                ? `${currentSong.artist}, ${currentSong.year}`
                 : '--.--'}
             </p>
           </div>

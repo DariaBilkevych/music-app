@@ -12,9 +12,23 @@ spec:
       labels:
         app: statistics-mongo
     spec:
+      initContainers:
+        - name: init-mongo
+          image: busybox
+          command: ['sh', '-c', 'rm -f /data/db/mongod.lock']
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
       containers:
         - name: statistics-mongo
           image: mongo
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+      volumes:
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: statistics-mongo-pvc
 ---
 apiVersion: v1
 kind: Service
