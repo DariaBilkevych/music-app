@@ -10,6 +10,7 @@ import { indexContentRouter } from './routes/index';
 import { showAllUserConentRouter } from './routes/show';
 import { showOneUserContentRouter } from './routes/show-one';
 import { deleteContentRouter } from './routes/delete';
+import { deleteContentAdminRouter } from './routes/admin-delete';
 
 const app = express();
 app.set('trust proxy', true);
@@ -28,6 +29,7 @@ app.use(indexContentRouter);
 app.use(showAllUserConentRouter);
 app.use(showOneUserContentRouter);
 app.use(deleteContentRouter);
+app.use(deleteContentAdminRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();

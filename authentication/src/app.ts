@@ -11,6 +11,7 @@ import { signupRouter } from './routes/auth/signup';
 
 import { currentUserRouter } from './routes/user/current-user';
 import { updateUserRouter } from './routes/user/update';
+import { getUserMessagesRouter } from './routes/user/show-messages';
 
 import { emailVerificationRouter } from './routes/auth/verify-email';
 import { resendVerificationEmailRouter } from './routes/auth/resend-verification-email';
@@ -33,6 +34,7 @@ app.use(signupRouter);
 
 app.use(currentUserRouter);
 app.use(updateUserRouter);
+app.use(getUserMessagesRouter);
 
 app.use(emailVerificationRouter);
 app.use(resendVerificationEmailRouter);

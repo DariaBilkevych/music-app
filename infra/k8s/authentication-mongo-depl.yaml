@@ -28,7 +28,7 @@ spec:
       volumes:
         - name: mongo-data
           persistentVolumeClaim:
-            claimName: mongo-pvc
+            claimName: authentication-mongo-pvc
 ---
 apiVersion: v1
 kind: Service

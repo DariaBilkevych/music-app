@@ -10,10 +10,10 @@ interface ListeningAttrs {
 
 interface ListeningDoc extends mongoose.Document {
   _id: mongoose.Types.ObjectId;
-  userId: string; // Ідентифікатор користувача, який слухає
-  audioFileId: AudioFileDoc; // Ідентифікатор треку
-  timestamps: Date[]; // Час прослуховування
-  playCount: number; // Загальна кількість прослуховувань однієї пісні користувачем
+  userId: string;
+  audioFileId: AudioFileDoc;
+  timestamps: Date[];
+  playCount: number;
 }
 
 interface ListeningModel extends mongoose.Model<ListeningDoc> {
