@@ -4,6 +4,7 @@ import { AudioFile } from '../models/audio-file';
 import {
   NotFoundError,
   requireAdmin,
+  requireAuth,
   validateRequest,
 } from '@dbmusicapp/common';
 import { natsWrapper } from '../nats-wrapper';
@@ -38,7 +39,7 @@ router.delete(
       reason: reason,
     });
 
-    res.status(204);
+    res.status(204).send();
   }
 );
 

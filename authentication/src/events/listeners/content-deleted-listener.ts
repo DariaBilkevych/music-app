@@ -19,9 +19,13 @@ export class ContentDeletedListener extends Listener<ContentDeletedEvent> {
         userMessage = UserMessage.build({ userId, messages: [] });
       }
 
-      userMessage.messages.push(
-        `Ваш аудіофайл ${title} - ${artist} був видалений з сервісу адміністратором. Причина: ${reason}`
-      );
+      const newMessage = {
+        message: `Ваш аудіофайл ${title} - ${artist} був видалений з сервісу адміністратором. Причина: ${reason}`,
+        createdAt: new Date(),
+        read: false,
+      };
+
+      userMessage.messages.push(newMessage);
       await userMessage.save();
     }
 

@@ -6,11 +6,10 @@ import SongsList from '../../components/songs-list';
 import Loader from '../../components/loader';
 import { PlayerContext } from '../../components/player-context';
 
-const PlaylistShow = () => {
+const PlaylistShow = (currentUser) => {
   const [playlist, setPlaylist] = useState(null);
   const [newPlaylistTitle, setNewPlaylistTitle] = useState('');
   const [editing, setEditing] = useState(false);
-  // const [selectedSong, setSelectedSong] = useState(null);
   const { setCurrentSong, setContent } = useContext(PlayerContext);
 
   const router = useRouter();
@@ -58,7 +57,6 @@ const PlaylistShow = () => {
   };
 
   const handleSelectSong = (song) => {
-    // setSelectedSong(song);
     setCurrentSong(song);
   };
 
@@ -115,6 +113,7 @@ const PlaylistShow = () => {
             onSelectSong={handleSelectSong}
             onDeleteSong={handleDeleteSong}
             isEditing={editing}
+            currentUser={currentUser}
           />
         </div>
       ) : (

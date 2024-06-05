@@ -69,7 +69,8 @@ const SongsList = ({
     }
   };
 
-  const handlePlaylistInteraction = (song) => {
+  const handlePlaylistInteraction = (song, event) => {
+    event.stopPropagation();
     setSelectedSong(song);
     setIsModalOpen(true);
     const initialSelectedPlaylists = playlists.reduce((acc, playlist) => {
@@ -113,7 +114,7 @@ const SongsList = ({
           <button
             className={`flex items-center px-2 py-1 border border-orange-400 rounded-full text-orange-400 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300 ml-4`}
             title="Додати до плейлисту"
-            onClick={() => handlePlaylistInteraction(song)}
+            onClick={(event) => handlePlaylistInteraction(song, event)}
           >
             <i className="ri-add-line text-orange-400 font-bold"></i>
           </button>

@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Loader from '../../components/loader';
 import TopArtistsChart from '../../components/top-artist-chart';
 import UserListeningChart from '../../components/user-listening-chart';
+import NotificationModal from '../../components/notification-modal';
 
 const UserProfile = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -15,6 +16,7 @@ const UserProfile = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [songs, setSongs] = useState([]);
+  const [messages, setMessages] = useState([]);
 
   const { doRequest: updateProfileRequest } = useRequest({
     url: `/api/users/${currentUser?.id}`,
@@ -38,8 +40,14 @@ const UserProfile = () => {
 
   useEffect(() => {
     fetchCurrentUser();
-    fetchUserSongs();
   }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchUserSongs();
+      fetchUserMessages();
+    }
+  }, [currentUser]);
 
   const fetchCurrentUser = async () => {
     try {
@@ -57,6 +65,18 @@ const UserProfile = () => {
     try {
       const { data } = await axios.get('/api/content/user-content');
       setSongs(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchUserMessages = async () => {
+    try {
+      if (!currentUser) return;
+      const { data } = await axios.get(`/api/users/messages`, {
+        params: { userId: currentUser.id },
+      });
+      setMessages(data.messages);
     } catch (error) {
       console.error(error);
     }
@@ -126,6 +146,12 @@ const UserProfile = () => {
                   </button>
                 </p>
               )}
+            </div>
+            <div className="ml-auto">
+              <NotificationModal
+                messages={messages}
+                fetchMessages={fetchUserMessages}
+              />
             </div>
           </div>
           <div className="p-4 border-b border-gray-200">

@@ -36,7 +36,7 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
       <div className="container">
         <PlayerProvider>
           <Component currentUser={currentUser} {...pageProps} />
-          {!excludePlayer && <Player />}
+          <Player isVisible={!excludePlayer} />
         </PlayerProvider>
       </div>
     </div>

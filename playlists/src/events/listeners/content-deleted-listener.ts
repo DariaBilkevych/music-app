@@ -20,7 +20,11 @@ export class ContentDeletedListener extends Listener<ContentDeletedEvent> {
     });
 
     for (const playlist of playlists) {
-      playlist.audioFilesCount--;
+      playlist.audioFiles = playlist.audioFiles.filter(
+        (fileId: any) => !fileId.equals(audioFile._id)
+      );
+
+      playlist.audioFilesCount = playlist.audioFiles.length;
       await playlist.save();
     }
 

@@ -1,9 +1,14 @@
 import mongoose, { Document } from 'mongoose';
 
+interface Message {
+  message: string;
+  createdAt: Date;
+  read: boolean;
+}
+
 interface UserMessageAttrs {
   userId: string;
-  messages: string[];
-  createdAt?: Date;
+  messages: Message[];
 }
 
 interface UserMessageModel extends mongoose.Model<UserMessageDoc> {
@@ -12,8 +17,7 @@ interface UserMessageModel extends mongoose.Model<UserMessageDoc> {
 
 interface UserMessageDoc extends Document {
   userId: string;
-  messages: string[];
-  createdAt: Date;
+  messages: Message[];
 }
 
 const userMessageSchema = new mongoose.Schema(
@@ -22,14 +26,22 @@ const userMessageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    messages: {
-      type: [String],
-      required: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+    messages: [
+      {
+        message: {
+          type: String,
+          required: true,
+        },
+        createdAt: {
+          type: Date,
+          required: true,
+        },
+        read: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
   },
   {
     toJSON: {

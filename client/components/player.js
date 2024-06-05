@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useContext } from 'react';
 import { PlayerContext } from './player-context';
 import axios from 'axios';
 
-const Player = () => {
+const Player = ({ isVisible }) => {
   const audioRef = useRef();
   const {
     currentSong,
@@ -74,7 +74,7 @@ const Player = () => {
     <div
       className={`absolute bottom-0 left-0 right-0 p-5 shadow-lg bg-white ${
         !currentSong && 'pointer-events-none opacity-50'
-      }`}
+      } ${!isVisible ? 'hidden' : ''}`}
     >
       <div className="flex justify-between items-center border rounded-md p-2">
         <div className="flex items-center w-1/3">

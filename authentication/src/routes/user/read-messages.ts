@@ -5,20 +5,21 @@ import { currentUser } from '@dbmusicapp/common';
 
 const router = express.Router();
 
-router.get(
-  '/api/users/messages',
+router.patch(
+  '/api/users/messages/read-all',
   currentUser,
   async (req: Request, res: Response) => {
     const userId = req.currentUser!.id;
 
-    const userMessages = await UserMessage.findOne({ userId });
+    await UserMessage.updateMany(
+      { userId },
+      { $set: { 'messages.$[].read': true } }
+    );
 
-    if (!userMessages) {
-      throw new NotFoundError();
-    }
-
-    res.status(200).send(userMessages);
+    res
+      .status(200)
+      .send({ message: 'Усі повідомлення позначені як прочитані' });
   }
 );
 
-export { router as getUserMessagesRouter };
+export { router as markMessagesAsReadRouter };
