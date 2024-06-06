@@ -8,6 +8,8 @@ import {
 } from '@dbmusicapp/common';
 import { User } from '../../models/user';
 import { sendVerificationEmail } from '../../services/email';
+import { natsWrapper } from '../../nats-wrapper';
+import { UserSignedUpPublisher } from '../../events/publishers/user-signed-up-publisher';
 
 const router = express.Router();
 
@@ -49,6 +51,13 @@ router.post(
       { expiresIn: '1h' }
     );
     await sendVerificationEmail(user.email, verificationToken);
+
+    await new UserSignedUpPublisher(natsWrapper.client).publish({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
 
     await user.save();
     res.status(201).send(user);

@@ -6,8 +6,13 @@ import { currentUser, errorHandler, NotFoundError } from '@dbmusicapp/common';
 
 import { createPlaybackRouter } from './routes/create-playback';
 import { showPlaybacksRouter } from './routes/show-playbacks';
-import { topArtistsRouter } from './routes/top-artist';
-import { listeningStatsForAudiosRouter } from './routes/listening-for-audios';
+import { topArtistsRouter } from './routes/user/top-artist';
+import { listeningStatsForAudiosRouter } from './routes/user/listening-for-audios';
+
+import { adminStatsRouter } from './routes/admin/overal';
+import { adminTopArtistsRouter } from './routes/admin/top-artists';
+import { adminTopSongsRouter } from './routes/admin/top-songs';
+import { adminTopGenresRouter } from './routes/admin/top-genres';
 
 const app = express();
 app.set('trust proxy', true);
@@ -24,6 +29,11 @@ app.use(createPlaybackRouter);
 app.use(showPlaybacksRouter);
 app.use(topArtistsRouter);
 app.use(listeningStatsForAudiosRouter);
+
+app.use(adminStatsRouter);
+app.use(adminTopArtistsRouter);
+app.use(adminTopSongsRouter);
+app.use(adminTopGenresRouter);
 
 app.all('*', async (req, res) => {
   throw new NotFoundError();

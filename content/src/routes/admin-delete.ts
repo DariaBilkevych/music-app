@@ -4,7 +4,6 @@ import { AudioFile } from '../models/audio-file';
 import {
   NotFoundError,
   requireAdmin,
-  requireAuth,
   validateRequest,
 } from '@dbmusicapp/common';
 import { natsWrapper } from '../nats-wrapper';
@@ -15,7 +14,12 @@ const router = express.Router();
 router.delete(
   '/api/content/admin/:audioFileId',
   requireAdmin,
-  [body('reason').not().isEmpty().withMessage('Reason is required')],
+  [
+    body('reason')
+      .not()
+      .isEmpty()
+      .withMessage('Вкажіть причину видалення треку'),
+  ],
   validateRequest,
   async (req: Request, res: Response) => {
     const { audioFileId } = req.params;

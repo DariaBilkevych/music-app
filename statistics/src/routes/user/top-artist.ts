@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
-import { requireAuth, BadRequestError } from '@dbmusicapp/common';
-import { Listening } from '../models/listening';
-import moment from 'moment-timezone';
+import { requireAuth } from '@dbmusicapp/common';
+import { Listening } from '../../models/listening';
+import { getStartEndDates } from '../../utils/dates';
 
 const router = express.Router();
 
@@ -11,31 +11,7 @@ router.get(
   async (req: Request, res: Response) => {
     const userId = req.currentUser!.id;
     const period = req.query.period as string;
-    let startDate, startDateString, endDate, endDateString;
-
-    const periodOptions = {
-      day: 'day',
-      week: 'week',
-      month: 'month',
-      year: 'year',
-    };
-
-    if (periodOptions.hasOwnProperty(period)) {
-      let periodType: moment.unitOfTime.StartOf =
-        period as moment.unitOfTime.StartOf;
-      startDateString = moment
-        .tz('Europe/Kiev')
-        .startOf(periodType)
-        .format('YYYY-MM-DDTHH:mm:ss');
-      endDateString = moment
-        .tz('Europe/Kiev')
-        .endOf(periodType)
-        .format('YYYY-MM-DDTHH:mm:ss');
-      startDate = new Date(startDateString);
-      endDate = new Date(endDateString);
-    } else {
-      throw new BadRequestError('Invalid period');
-    }
+    const { startDate, endDate } = getStartEndDates(period);
 
     const topArtists = await Listening.aggregate([
       {
@@ -108,7 +84,7 @@ router.get(
         $sort: { totalPlayCount: -1 },
       },
       {
-        $limit: 5,
+        $limit: 10,
       },
     ]);
 

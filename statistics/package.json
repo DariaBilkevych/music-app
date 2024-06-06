@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@dbmusicapp/common": "^1.0.21",
+    "@dbmusicapp/common": "^1.0.25",
     "@types/cookie-session": "^2.0.48",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
