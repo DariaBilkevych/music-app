@@ -1,0 +1,34 @@
+import React from 'react';
+import UniversalChart from '../../components/admin-charts/universal-chart';
+
+const DetailedStatistics = () => {
+  return (
+    <div className="container overflow-y-auto h-[65vh] px-4 py-3 flex justify-center">
+      <div className="flex justify-between w-full">
+        <div className="w-1/3 p-2">
+          <UniversalChart
+            apiUrl="/api/statistics/admin/top-artists"
+            title="ТОП-10 виконавців"
+            labelsCallback={(item) => item.artist}
+          />
+        </div>
+        <div className="w-1/3 p-2">
+          <UniversalChart
+            apiUrl="/api/statistics/admin/top-genres"
+            title="ТОП-5 жанрів"
+            labelsCallback={(item) => item.genre}
+          />
+        </div>
+        <div className="w-1/3 p-2">
+          <UniversalChart
+            apiUrl="/api/statistics/admin/top-songs"
+            title="ТОП-10 пісень"
+            labelsCallback={(item) => `${item.title} - ${item.artist}`}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DetailedStatistics;

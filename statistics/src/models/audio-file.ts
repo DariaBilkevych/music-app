@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 import { Genre } from '@dbmusicapp/common';
+import { UserDoc } from './user';
 
 interface AudioFileAttrs {
   id: string;
@@ -20,7 +21,7 @@ export interface AudioFileDoc extends mongoose.Document {
   year: number;
   duration: number;
   src: string;
-  userId: string;
+  userId: UserDoc;
   version: number;
 }
 
@@ -28,42 +29,52 @@ interface AudioFileModel extends mongoose.Model<AudioFileDoc> {
   build(attr: AudioFileAttrs): AudioFileDoc;
 }
 
-const audioFileSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
+const audioFileSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    artist: {
+      type: String,
+      required: true,
+    },
+    genre: {
+      type: [
+        {
+          type: String,
+          enum: Object.values(Genre),
+          required: true,
+        },
+      ],
+      required: true,
+    },
+    year: {
+      type: Number,
+      required: true,
+    },
+    duration: {
+      type: Number,
+      required: true,
+    },
+    src: {
+      type: String,
+      required: true,
+    },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
   },
-  artist: {
-    type: String,
-    required: true,
-  },
-  genre: {
-    type: [
-      {
-        type: String,
-        enum: Object.values(Genre),
-        required: true,
+  {
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id;
+        delete ret._id;
       },
-    ],
-    required: true,
-  },
-  year: {
-    type: Number,
-    required: true,
-  },
-  duration: {
-    type: Number,
-    required: true,
-  },
-  src: {
-    type: String,
-    required: true,
-  },
-  userId: {
-    type: String,
-    required: true,
-  },
-});
+    },
+  }
+);
 
 audioFileSchema.set('versionKey', 'version');
 audioFileSchema.plugin(updateIfCurrentPlugin);

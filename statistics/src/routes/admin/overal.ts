@@ -21,7 +21,6 @@ router.get(
       },
     ]);
 
-    // Отримання найбільш прослухованої пісні
     const topSong = await Listening.aggregate([
       {
         $group: {
@@ -56,7 +55,6 @@ router.get(
       },
     ]);
 
-    // Отримання найбільш прослухованого виконавця
     const topArtist = await Listening.aggregate([
       {
         $lookup: {

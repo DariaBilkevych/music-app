@@ -84,7 +84,7 @@ router.get(
         $sort: { totalPlayCount: -1 },
       },
       {
-        $limit: 10,
+        $limit: 5,
       },
     ]);
 

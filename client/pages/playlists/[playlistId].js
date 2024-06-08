@@ -71,7 +71,7 @@ const PlaylistShow = (currentUser) => {
   }, [router.query]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container overflow-y-auto h-[65vh] p-3">
       {playlist ? (
         <div className="flex flex-col">
           <div className="flex items-center justify-between mb-4">

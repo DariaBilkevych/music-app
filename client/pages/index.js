@@ -13,7 +13,7 @@ const LandingPage = ({ currentUser, content }) => {
 
   return (
     <div>
-      <div className="container overflow-y-scroll h-[65vh] p-3">
+      <div className="container overflow-y-auto h-[65vh] p-3">
         <input
           type="text"
           className="form-control mb-3 mt-2 w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"

@@ -46,7 +46,7 @@ const PlaylistsPage = () => {
   };
 
   return (
-    <div className="container mx-auto px-8">
+    <div className="container overflow-y-auto h-[65vh] px-8">
       <div className="flex justify-between items-center mb-5 mt-6">
         <button
           className="flex items-center px-4 py-2 border border-orange-400 text-orange-400 rounded-md hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300"

@@ -48,7 +48,6 @@ const UserListeningChart = () => {
         )}, ${Math.floor(Math.random() * 255)}, 1)`,
       });
     } else {
-      // Handle tracks with no listening data
       console.warn(`Трек "${track.title}" не має жодного прослуховування.`);
     }
   });

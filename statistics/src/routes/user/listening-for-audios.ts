@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { requireAuth } from '@dbmusicapp/common';
 import { Listening } from '../../models/listening';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.get(
       },
       {
         $match: {
-          'audioFile.userId': userId,
+          'audioFile.userId': new mongoose.Types.ObjectId(userId),
         },
       },
       {

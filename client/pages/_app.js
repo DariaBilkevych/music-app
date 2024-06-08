@@ -4,15 +4,17 @@ import '../styles/globals.css';
 import { Transition } from '@headlessui/react';
 import { Toaster, ToastIcon, resolveValue } from 'react-hot-toast';
 import { PlayerProvider } from '../components/player-context';
-
 import buildClient from '../api/build-client';
 import Header from '../components/header';
 import Player from '../components/player';
+import AdminSidebar from '../components/admin-sidebar';
 
 const AppComponent = ({ Component, pageProps, currentUser }) => {
   const excludePlayer = Component.excludePlayer || false;
+  const isAdmin = currentUser && currentUser.role === 'admin';
+
   return (
-    <div>
+    <div className="flex flex-col h-screen">
       <Toaster position="top-center" reverseOrder={true}>
         {(t) => (
           <Transition
@@ -33,11 +35,14 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
         )}
       </Toaster>
       <Header currentUser={currentUser} />
-      <div className="container">
-        <PlayerProvider>
-          <Component currentUser={currentUser} {...pageProps} />
-          <Player isVisible={!excludePlayer} />
-        </PlayerProvider>
+      <div className="flex flex-grow">
+        {isAdmin && <AdminSidebar />}
+        <div className="flex-1">
+          <PlayerProvider>
+            <Component currentUser={currentUser} {...pageProps} />
+            <Player isVisible={!excludePlayer} />
+          </PlayerProvider>
+        </div>
       </div>
     </div>
   );

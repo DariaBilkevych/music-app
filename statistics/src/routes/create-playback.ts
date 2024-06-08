@@ -1,11 +1,7 @@
 import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
-import {
-  BadRequestError,
-  requireAuth,
-  validateRequest,
-} from '@dbmusicapp/common';
+import { requireAuth, UserRoles } from '@dbmusicapp/common';
 import { Listening } from '../models/listening';
+import { User } from '../models/user';
 import moment from 'moment-timezone';
 
 const router = express.Router();
@@ -19,6 +15,11 @@ router.post(
       .tz('Europe/Kiev')
       .format('YYYY-MM-DDTHH:mm:ss');
     const localTime = new Date(localTimeString);
+
+    const currentUser = await User.findById(req.currentUser!.id);
+    if (!currentUser || currentUser.role !== UserRoles.User) {
+      return;
+    }
 
     let listening = await Listening.findOne({
       userId: req.currentUser!.id,

@@ -6,8 +6,8 @@ import useRequest from '../../hooks/use-request';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 import Loader from '../../components/loader';
-import TopArtistsChart from '../../components/top-artist-chart';
-import UserListeningChart from '../../components/user-listening-chart';
+import TopArtistsChart from '../../components/user-charts/top-artist-chart';
+import UserListeningChart from '../../components/user-charts/user-listening-chart';
 import NotificationModal from '../../components/notification-modal';
 
 const UserProfile = () => {
