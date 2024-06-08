@@ -13,7 +13,8 @@ import { adminStatsRouter } from './routes/admin/overal';
 import { adminTopArtistsRouter } from './routes/admin/top-artists';
 import { adminTopSongsRouter } from './routes/admin/top-songs';
 import { adminTopGenresRouter } from './routes/admin/top-genres';
-import { getContentRouter } from './routes/admin/show-contet';
+import { getContentRouter } from './routes/admin/show-content';
+import { searchContentRouter } from './routes/admin/search-files';
 
 const app = express();
 app.set('trust proxy', true);
@@ -25,6 +26,8 @@ app.use(
   })
 );
 app.use(currentUser);
+
+app.use(searchContentRouter);
 
 app.use(createPlaybackRouter);
 app.use(showPlaybacksRouter);

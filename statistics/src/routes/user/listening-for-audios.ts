@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { requireAuth } from '@dbmusicapp/common';
 import { Listening } from '../../models/listening';
+import { getStartEndDatesMonth } from '../../utils/dates';
 import mongoose from 'mongoose';
 
 const router = express.Router();
@@ -10,8 +11,20 @@ router.get(
   requireAuth,
   async (req: Request, res: Response) => {
     const userId = req.currentUser!.id;
+    const period = parseInt(req.query.period as string, 10);
+    const { startDate, endDate } = getStartEndDatesMonth(period);
 
     const listeningStatsForAudio = await Listening.aggregate([
+      {
+        $match: {
+          timestamps: {
+            $elemMatch: {
+              $gte: startDate,
+              $lte: endDate,
+            },
+          },
+        },
+      },
       {
         $lookup: {
           from: 'audiofiles',

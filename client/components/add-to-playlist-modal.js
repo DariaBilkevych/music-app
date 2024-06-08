@@ -86,23 +86,26 @@ const AddToPlaylistModal = ({
             </button>
           </div>
           <ul className="mt-4 overflow-auto h-full">
-            {playlists.map((playlist) => (
-              <li
-                key={playlist.id}
-                className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
-              >
-                <input
-                  type="checkbox"
-                  id={playlist.id}
-                  checked={selectedPlaylists[playlist.id] || false}
-                  onChange={() => handleCheckboxChange(playlist.id)}
-                  className="form-checkbox h-5 w-5 text-orange-400 rounded-full focus:ring-orange-400 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 mr-2"
-                />
-                <label htmlFor={playlist.id} className="text-base">
-                  {playlist.title}
-                </label>
-              </li>
-            ))}
+            {playlists.map(
+              (playlist) =>
+                playlist.title !== 'Улюблене' && (
+                  <li
+                    key={playlist.id}
+                    className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      id={playlist.id}
+                      checked={selectedPlaylists[playlist.id] || false}
+                      onChange={() => handleCheckboxChange(playlist.id)}
+                      className="form-checkbox h-5 w-5 text-orange-400 rounded-full focus:ring-orange-400 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 mr-2"
+                    />
+                    <label htmlFor={playlist.id} className="text-base">
+                      {playlist.title}
+                    </label>
+                  </li>
+                )
+            )}
           </ul>
           <button
             onClick={onPlaylistInteraction}

@@ -3,16 +3,25 @@ import axios from 'axios';
 import 'chart.js/auto';
 import { Line } from 'react-chartjs-2';
 
+const getCurrentMonth = () => {
+  return new Date().getMonth() + 1; // Місяці в JavaScript починаються з 0, тому додаємо 1
+};
+
 const UserListeningChart = () => {
   const [listeningData, setListeningData] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
 
   useEffect(() => {
     fetchListeningData();
-  }, []);
+  }, [selectedMonth]);
 
   const fetchListeningData = async () => {
     try {
-      const { data } = await axios.get('/api/statistics/listening-for-audios');
+      const { data } = await axios.get('/api/statistics/listening-for-audios', {
+        params: {
+          period: selectedMonth,
+        },
+      });
       setListeningData(data);
     } catch (error) {
       console.error(error);
@@ -89,6 +98,24 @@ const UserListeningChart = () => {
         <h3 className="text-xl font-semibold text-center mb-2">
           Графік прослуховувань власних треків
         </h3>
+        <select
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+          className="form-select border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-orange-500 w-32"
+        >
+          <option value={1}>Січень</option>
+          <option value={2}>Лютий</option>
+          <option value={3}>Березень</option>
+          <option value={4}>Квітень</option>
+          <option value={5}>Травень</option>
+          <option value={6}>Червень</option>
+          <option value={7}>Липень</option>
+          <option value={8}>Серпень</option>
+          <option value={9}>Вересень</option>
+          <option value={10}>Жовтень</option>
+          <option value={11}>Листопад</option>
+          <option value={12}>Грудень</option>
+        </select>
         {chartData.datasets.length > 0 && (
           <p className="text-center text-gray-600 text-sm p-3">
             * На цьому графіку відображаються лише треки, що мають

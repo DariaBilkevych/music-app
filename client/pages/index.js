@@ -1,29 +1,38 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useState } from 'react';
+import axios from 'axios';
 import SongsList from '../components/songs-list';
+import SearchInput from '../components/search';
 import { PlayerContext } from '../components/player-context';
 
-const LandingPage = ({ currentUser, content }) => {
-  const { setCurrentSong, setContent } = useContext(PlayerContext);
+const LandingPage = ({ currentUser, initialContent }) => {
+  const { setCurrentSong } = useContext(PlayerContext);
+  const [content, setContentState] = useState(initialContent);
+
   const handleSelectSong = (song) => {
     setCurrentSong(song);
   };
-  useEffect(() => {
-    setContent(content);
-  });
+
+  const handleSearch = async (query) => {
+    if (query) {
+      const { data } = await axios.get('/api/content/search', {
+        params: { query },
+      });
+      setContentState(data);
+    } else {
+      setContentState(initialContent);
+    }
+  };
 
   return (
     <div>
       <div className="container overflow-y-auto h-[65vh] p-3">
-        <input
-          type="text"
-          className="form-control mb-3 mt-2 w-full px-3 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          placeholder="Назва пісні, виконавець..."
-        />
+        <SearchInput onSearch={handleSearch} />
         <SongsList
           allSongs={content}
           onSelectSong={handleSelectSong}
           className="mt-[-4]"
           currentUser={currentUser}
+          noSongsMessage="На жаль, за Вашим запитом нічого не знайдено."
         />
       </div>
     </div>
@@ -32,7 +41,7 @@ const LandingPage = ({ currentUser, content }) => {
 
 LandingPage.getInitialProps = async (context, client, currentUser) => {
   const { data } = await client.get('/api/content');
-  return { content: data };
+  return { initialContent: data };
 };
 
 export default LandingPage;

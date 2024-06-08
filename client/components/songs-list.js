@@ -10,6 +10,7 @@ const SongsList = ({
   onDeleteSong,
   isEditing,
   currentUser,
+  noSongsMessage,
 }) => {
   const { currentSong } = useContext(PlayerContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,6 +85,9 @@ const SongsList = ({
 
   return (
     <div className="container mx-auto px-4 py-2">
+      {allSongs.length === 0 && (
+        <p className="text-gray-500 text-center my-4">{noSongsMessage}</p>
+      )}
       {allSongs.map((song) => (
         <div
           key={song.id}

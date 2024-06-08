@@ -1,8 +1,10 @@
-import React, { useEffect, useRef, useContext } from 'react';
+import React, { useEffect, useRef, useContext, useState } from 'react';
 import { PlayerContext } from './player-context';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
+import { UserRoles } from '@dbmusicapp/common';
 
-const Player = ({ isVisible }) => {
+const Player = ({ isVisible, currentUser }) => {
   const audioRef = useRef();
   const {
     currentSong,
@@ -15,6 +17,8 @@ const Player = ({ isVisible }) => {
     setVolume,
     content,
   } = useContext(PlayerContext);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [favoritePlaylistId, setFavoritePlaylistId] = useState(null);
 
   const recordPlayback = async (audioFileId) => {
     try {
@@ -67,6 +71,53 @@ const Player = ({ isVisible }) => {
   };
 
   useEffect(() => {
+    const fetchAndCheckFavoritePlaylist = async () => {
+      if (!currentSong || !currentUser) {
+        setIsFavorite(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get('/api/playlists');
+        if (response.data) {
+          const favoritePlaylist = response.data.find(
+            (playlist) => playlist.title === 'Улюблене'
+          );
+          if (favoritePlaylist) {
+            setFavoritePlaylistId(favoritePlaylist.id);
+
+            const favoritePlaylistAudioFiles = favoritePlaylist.audioFiles;
+            const isCurrentSongInFavorites = favoritePlaylistAudioFiles.some(
+              (audioFile) => audioFile.id === currentSong.id
+            );
+            setIsFavorite(isCurrentSongInFavorites);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
+    };
+
+    fetchAndCheckFavoritePlaylist();
+  }, [currentSong, currentUser]);
+
+  const handleFavoriteToggle = async () => {
+    if (isFavorite) {
+      await axios.delete(
+        `/api/playlists/${favoritePlaylistId}/${currentSong.id}`
+      );
+      setIsFavorite(false);
+      toast.success('Успішно видалено з "Улюбене"');
+    } else {
+      await axios.post(`/api/playlists/${favoritePlaylistId}/add-audio`, {
+        audioFileId: currentSong.id,
+      });
+      setIsFavorite(true);
+      toast.success('Успішно додано до "Улюбене"');
+    }
+  };
+
+  useEffect(() => {
     audioRef.current.volume = volume;
   }, [volume]);
 
@@ -76,7 +127,7 @@ const Player = ({ isVisible }) => {
         !currentSong && 'pointer-events-none opacity-50'
       } ${!isVisible ? 'hidden' : ''}`}
     >
-      <div className="flex justify-between items-center border rounded-md p-2">
+      <div className="flex items-center border rounded-md p-2">
         <div className="flex items-center w-1/3">
           <div>
             <h5 className="text-lg font-medium mb-1">
@@ -88,6 +139,21 @@ const Player = ({ isVisible }) => {
                 : '--.--'}
             </p>
           </div>
+          {currentUser && currentUser.role === UserRoles.User && (
+            <div className="ml-7">
+              {isFavorite ? (
+                <i
+                  className="ri-heart-3-fill text-2xl text-orange-500 cursor-pointer"
+                  onClick={handleFavoriteToggle}
+                />
+              ) : (
+                <i
+                  className="ri-heart-3-line text-2xl cursor-pointer hover:text-gray-500"
+                  onClick={handleFavoriteToggle}
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col items-center w-1/3">

@@ -45,16 +45,7 @@ router.post(
       ),
     body('genre')
       .isArray({ min: 1 })
-      .withMessage('Потрібно вибрати хоча б один жанр')
-      .custom((value: any[]) => {
-        const genres = Object.values(Genre);
-        value.forEach((genre) => {
-          if (!genres.includes(genre as Genre)) {
-            throw new Error(`Жанр "${genre}" недійсний`);
-          }
-        });
-        return true;
-      }),
+      .withMessage('Потрібно вибрати хоча б один жанр'),
     body('year')
       .isInt({ min: 1900, max: new Date().getFullYear() })
       .withMessage('Рік випуску має бути від 1900 до поточного року'),
@@ -64,64 +55,56 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ message: 'No file uploaded!' });
-      }
-      await cloudinary.uploader.upload(
-        req.file!.path,
-        {
-          folder: 'musicapp',
-          use_filename: true,
-          resource_type: 'raw',
-        },
-        async (err, result) => {
-          if (err) {
-            console.error('Cloudinary upload error:', err);
-            res.status(500).json({ message: 'Cloudinary upload failed!' });
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded!' });
+    }
+    await cloudinary.uploader.upload(
+      req.file!.path,
+      {
+        folder: 'musicapp',
+        use_filename: true,
+        resource_type: 'raw',
+      },
+      async (err, result) => {
+        if (err) {
+          console.error('Cloudinary upload error:', err);
+          res.status(500).json({ message: 'Cloudinary upload failed!' });
+        } else {
+          const { title, artist, genre, year, duration } = req.body;
+
+          const audioFile =
+            result &&
+            AudioFile.build({
+              title,
+              artist,
+              genre,
+              year,
+              duration,
+              src: result.url,
+              userId: req.currentUser!.id,
+            });
+
+          if (audioFile) {
+            await audioFile.save();
+            await new ContentCreatedPublisher(natsWrapper.client).publish({
+              id: audioFile.id,
+              title: audioFile.title,
+              artist: audioFile.artist,
+              genre: audioFile.genre,
+              year: audioFile.year,
+              duration: audioFile.duration,
+              src: audioFile.src,
+              userId: audioFile.userId,
+              version: audioFile.version,
+            });
+
+            res.status(201).send(audioFile);
           } else {
-            const { title, artist, genre, year, duration } = req.body;
-
-            const audioFile =
-              result &&
-              AudioFile.build({
-                title,
-                artist,
-                genre,
-                year,
-                duration,
-                src: result.url,
-                userId: req.currentUser!.id,
-              });
-
-            if (audioFile) {
-              await audioFile.save();
-              await new ContentCreatedPublisher(natsWrapper.client).publish({
-                id: audioFile.id,
-                title: audioFile.title,
-                artist: audioFile.artist,
-                genre: audioFile.genre,
-                year: audioFile.year,
-                duration: audioFile.duration,
-                src: audioFile.src,
-                userId: audioFile.userId,
-                version: audioFile.version,
-              });
-
-              res.status(201).send(audioFile);
-            } else {
-              res.status(500).json({ message: 'Result is undefined' });
-            }
+            res.status(500).json({ message: 'Result is undefined' });
           }
         }
-      );
-    } catch (err) {
-      res.status(500).send({
-        message: 'Error adding song',
-        success: false,
-        data: err,
-      });
-    }
+      }
+    );
   }
 );
 

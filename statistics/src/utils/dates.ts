@@ -31,4 +31,27 @@ const getStartEndDates = (
   }
 };
 
-export { getStartEndDates };
+const getStartEndDatesMonth = (
+  month: number
+): { startDate: Date; endDate: Date } => {
+  const currentYear = moment().year();
+
+  if (month >= 1 && month <= 12) {
+    const startDateString = moment
+      .tz(`${currentYear}-${month}-01`, 'YYYY-MM-DD', 'Europe/Kiev')
+      .startOf('month')
+      .format('YYYY-MM-DDTHH:mm:ss');
+    const endDateString = moment
+      .tz(`${currentYear}-${month}-01`, 'YYYY-MM-DD', 'Europe/Kiev')
+      .endOf('month')
+      .format('YYYY-MM-DDTHH:mm:ss');
+    const startDate = new Date(startDateString);
+    const endDate = new Date(endDateString);
+
+    return { startDate, endDate };
+  } else {
+    throw new BadRequestError('Invalid month');
+  }
+};
+
+export { getStartEndDates, getStartEndDatesMonth };

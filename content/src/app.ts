@@ -11,6 +11,7 @@ import { showAllUserConentRouter } from './routes/show';
 import { showOneUserContentRouter } from './routes/show-one';
 import { deleteContentRouter } from './routes/delete';
 import { deleteContentAdminRouter } from './routes/admin-delete';
+import { searchContentRouter } from './routes/search';
 
 const app = express();
 app.set('trust proxy', true);
@@ -23,6 +24,7 @@ app.use(
 );
 app.use(currentUser);
 
+app.use(searchContentRouter);
 app.use(uploadContentRouter);
 app.use(updateContentRouter);
 app.use(indexContentRouter);

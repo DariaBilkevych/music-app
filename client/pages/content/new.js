@@ -24,7 +24,7 @@ const NewAudioFile = () => {
     setSong({ ...song, file: file });
   };
 
-  const { doRequest } = useRequest({
+  const { doRequest, errors } = useRequest({
     url: '/api/content',
     method: 'post',
     headers: { 'Content-Type': 'multipart/form-data' },
@@ -61,7 +61,7 @@ const NewAudioFile = () => {
       <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
         Завантажити власний трек
       </h1>
-      {loading && <Loader />}
+      {!errors && loading && <Loader />}
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
           <label

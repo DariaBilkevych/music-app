@@ -40,7 +40,7 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
         <div className="flex-1">
           <PlayerProvider>
             <Component currentUser={currentUser} {...pageProps} />
-            <Player isVisible={!excludePlayer} />
+            <Player isVisible={!excludePlayer} currentUser={currentUser} />
           </PlayerProvider>
         </div>
       </div>

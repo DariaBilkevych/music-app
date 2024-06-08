@@ -2,15 +2,6 @@ import mongoose from 'mongoose';
 import { app } from './app';
 import { natsWrapper } from './nats-wrapper';
 import { ContentDeletedListener } from './events/listeners/content-deleted-listener';
-import http from 'http';
-import { Server as SocketIOServer } from 'socket.io';
-
-const server = http.createServer(app);
-const io = new SocketIOServer(server, {
-  cors: {
-    origin: '*',
-  },
-});
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -60,5 +51,3 @@ const start = async () => {
 };
 
 start();
-
-export { io };

@@ -114,6 +114,7 @@ const PlaylistShow = (currentUser) => {
             onDeleteSong={handleDeleteSong}
             isEditing={editing}
             currentUser={currentUser}
+            noSongsMessage="Ще не додали жодної пісні? Поверніться до головної сторінки і пошукайте там щось для себе."
           />
         </div>
       ) : (

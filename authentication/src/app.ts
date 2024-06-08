@@ -13,6 +13,7 @@ import { currentUserRouter } from './routes/user/current-user';
 import { updateUserRouter } from './routes/user/update';
 import { getUserMessagesRouter } from './routes/user/show-messages';
 import { markMessagesAsReadRouter } from './routes/user/read-messages';
+import { getAllUsersRouter } from './routes/user/show-all';
 
 import { emailVerificationRouter } from './routes/auth/verify-email';
 import { resendVerificationEmailRouter } from './routes/auth/resend-verification-email';
@@ -37,6 +38,7 @@ app.use(currentUserRouter);
 app.use(updateUserRouter);
 app.use(getUserMessagesRouter);
 app.use(markMessagesAsReadRouter);
+app.use(getAllUsersRouter);
 
 app.use(emailVerificationRouter);
 app.use(resendVerificationEmailRouter);

@@ -31,4 +31,15 @@ const DetailedStatistics = () => {
   );
 };
 
+DetailedStatistics.getInitialProps = async (context, client, currentUser) => {
+  if (!currentUser || currentUser.role !== 'admin') {
+    if (context.res) {
+      context.res.writeHead(302, { Location: '/auth/admin-signin' });
+      context.res.end();
+    } else {
+      Router.replace('/auth/admin-signin');
+    }
+  }
+};
+
 export default DetailedStatistics;
