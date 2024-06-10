@@ -10,7 +10,11 @@ const PlaylistShow = (currentUser) => {
   const [playlist, setPlaylist] = useState(null);
   const [newPlaylistTitle, setNewPlaylistTitle] = useState('');
   const [editing, setEditing] = useState(false);
-  const { setCurrentSong, setContent } = useContext(PlayerContext);
+  const {
+    setCurrentSong,
+    setContent,
+    content: playlistAudioFiles,
+  } = useContext(PlayerContext);
 
   const router = useRouter();
   const { playlistId } = router.query;
@@ -20,6 +24,7 @@ const PlaylistShow = (currentUser) => {
     method: 'get',
     onSuccess: (data) => {
       setPlaylist(data), setNewPlaylistTitle(data.title);
+      setContent(data.audioFiles);
     },
   });
 
@@ -35,7 +40,8 @@ const PlaylistShow = (currentUser) => {
     },
   });
 
-  const handleDeleteSong = async (audioFileId) => {
+  const handleDeleteSong = async (audioFileId, event) => {
+    event.stopPropagation();
     try {
       await axios.delete(`/api/playlists/${playlistId}/${audioFileId}`);
       setPlaylist({
@@ -61,10 +67,12 @@ const PlaylistShow = (currentUser) => {
   };
 
   useEffect(() => {
-    if (playlist) {
+    if (playlistAudioFiles && playlist && playlist.title === 'Улюблене') {
+      setPlaylist({ ...playlist, audioFiles: playlistAudioFiles });
+    } else if (playlist) {
       setContent(playlist.audioFiles);
     }
-  }, [playlist]);
+  }, [playlistAudioFiles, playlist, setContent]);
 
   useEffect(() => {
     fetchPlaylist();

@@ -7,7 +7,7 @@ const NotificationModal = ({ messages, fetchMessages }) => {
   const [unreadMessages, setUnreadMessages] = useState(false);
 
   useEffect(() => {
-    const hasUnread = messages.some((message) => !message.read);
+    const hasUnread = messages && messages.some((message) => !message.read);
     setUnreadMessages(hasUnread);
   }, [messages]);
 
@@ -49,7 +49,7 @@ const NotificationModal = ({ messages, fetchMessages }) => {
           </button>
         </div>
         <div className="overflow-auto h-70">
-          {messages.length > 0 ? (
+          {messages ? (
             messages.map((message, index) => (
               <div
                 key={index}

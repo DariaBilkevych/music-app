@@ -1,12 +1,16 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import SongsList from '../components/songs-list';
 import SearchInput from '../components/search';
 import { PlayerContext } from '../components/player-context';
 
 const LandingPage = ({ currentUser, initialContent }) => {
-  const { setCurrentSong } = useContext(PlayerContext);
+  const { setCurrentSong, setContent } = useContext(PlayerContext);
   const [content, setContentState] = useState(initialContent);
+
+  useEffect(() => {
+    setContent(content);
+  }, [content, setContent]);
 
   const handleSelectSong = (song) => {
     setCurrentSong(song);

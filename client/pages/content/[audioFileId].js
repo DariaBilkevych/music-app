@@ -169,8 +169,9 @@ const UpdateSong = () => {
             type="text"
             id="duration"
             value={song.duration}
+            readOnly
             onChange={(e) => setSong({ ...song, duration: e.target.value })}
-            className="w-full appearance-none border rounded py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+            className="w-full appearance-none border rounded py-2 px-3 text-gray-800 leading-tight focus:outline-none focus:ring-orange-500 focus:border-orange-500 bg-gray-100"
           />
         </div>
         <div>

@@ -210,7 +210,10 @@ const UserProfile = () => {
           </div>
         </div>
         {songs.length > 0 && (
-          <div className="w-full lg:w-1/3 lg:pl-4 mt-8 lg:mt-0">
+          <div
+            className="w-full lg:w-1/3 lg:pl-4 mt-8 lg:mt-0 overflow-auto"
+            style={{ maxHeight: 'calc(100vh - 400px)' }}
+          >
             <div className="bg-white shadow-lg rounded-lg p-4">
               <h3 className="text-lg font-semibold mb-4">
                 Мої завантажені треки
@@ -244,6 +247,7 @@ const UserProfile = () => {
             </div>
           </div>
         )}
+
         <div
           className={`container mx-auto px-4 flex flex-wrap justify-${
             songs.length > 0 ? 'between' : 'center'

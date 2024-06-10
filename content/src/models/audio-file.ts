@@ -8,6 +8,7 @@ interface AudioFileAttrs {
   genre: Genre[];
   year: number;
   duration: number;
+  fileHash: string;
   src: string;
   userId: string;
 }
@@ -18,6 +19,7 @@ interface AudioFileDoc extends mongoose.Document {
   genre: Genre[];
   year: number;
   duration: number;
+  fileHash: string;
   src: string;
   userId: string;
   version: number;
@@ -54,6 +56,9 @@ const audioFileSchema = new mongoose.Schema(
     duration: {
       type: Number,
       required: true,
+    },
+    fileHash: {
+      type: String,
     },
     src: {
       type: String,

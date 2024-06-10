@@ -12,11 +12,6 @@ router.get(
     const userId = req.currentUser!.id;
 
     const userMessages = await UserMessage.findOne({ userId });
-
-    if (!userMessages) {
-      throw new NotFoundError();
-    }
-
     res.status(200).send(userMessages);
   }
 );

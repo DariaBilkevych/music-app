@@ -121,6 +121,9 @@ AdminDeleteSongs.getInitialProps = async (context, client, currentUser) => {
       Router.replace('/auth/admin-signin');
     }
   }
+
+  const { data } = await client.get('/api/statistics/admin/content');
+  return { content: data };
 };
 
 export default AdminDeleteSongs;

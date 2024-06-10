@@ -16,6 +16,7 @@ const Player = ({ isVisible, currentUser }) => {
     volume,
     setVolume,
     content,
+    setContent,
   } = useContext(PlayerContext);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoritePlaylistId, setFavoritePlaylistId] = useState(null);
@@ -108,12 +109,14 @@ const Player = ({ isVisible, currentUser }) => {
       );
       setIsFavorite(false);
       toast.success('Успішно видалено з "Улюбене"');
+      setContent(content.filter((song) => song.id !== currentSong.id));
     } else {
       await axios.post(`/api/playlists/${favoritePlaylistId}/add-audio`, {
         audioFileId: currentSong.id,
       });
       setIsFavorite(true);
       toast.success('Успішно додано до "Улюбене"');
+      setContent([...content, currentSong]);
     }
   };
 
@@ -182,7 +185,7 @@ const Player = ({ isVisible, currentUser }) => {
           <div className="flex justify-between items-center w-full gap-3">
             <div className="flex items-center">
               <p className="text-base font-medium text-gray-500">
-                {Math.floor(currentTime / 60)}:
+                {Math.floor(currentTime / 60)}.
                 {Math.floor(currentTime % 60)
                   .toString()
                   .padStart(2, '0')}

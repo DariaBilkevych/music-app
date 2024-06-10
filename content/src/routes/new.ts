@@ -1,4 +1,8 @@
-import { requireAuth, validateRequest } from '@dbmusicapp/common';
+import {
+  BadRequestError,
+  requireAuth,
+  validateRequest,
+} from '@dbmusicapp/common';
 import express, { Request, Response } from 'express';
 import multer from 'multer';
 import { cloudinary } from '../cloudinary';
@@ -7,7 +11,7 @@ import fs from 'fs';
 import { body } from 'express-validator';
 import { ContentCreatedPublisher } from '../events/publishers/content-created-publisher';
 import { natsWrapper } from '../nats-wrapper';
-import { Genre } from '@dbmusicapp/common';
+import createFileHash from './services/hash';
 
 const router = express.Router();
 
@@ -41,6 +45,23 @@ router.post(
       .trim()
       .isLength({ min: 1, max: 20 })
       .withMessage(
+        'Виконавець є обов’язковим та повинен містити від 1 до 20 символів'
+      )
+      .custom(async (value, { req }) => {
+        const existingFile = await AudioFile.findOne({
+          artist: value,
+          title: req.body.title,
+        });
+        if (existingFile) {
+          throw new Error(
+            'Пісня з такою назвою та виконавцем вже існує на сервісі'
+          );
+        }
+      }),
+    body('artist')
+      .trim()
+      .isLength({ min: 1, max: 20 })
+      .withMessage(
         'Виконавець є обов’язковим та повинен містити від 1 до 50 символів'
       ),
     body('genre')
@@ -58,6 +79,16 @@ router.post(
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded!' });
     }
+
+    const fileHash = await createFileHash(req.file.path);
+    const existingFile = await AudioFile.findOne({ fileHash });
+
+    if (existingFile) {
+      throw new BadRequestError(
+        'Файл, який Ви намагаєтесь завантажити, не є унікальним'
+      );
+    }
+
     await cloudinary.uploader.upload(
       req.file!.path,
       {
@@ -80,6 +111,7 @@ router.post(
               genre,
               year,
               duration,
+              fileHash,
               src: result.url,
               userId: req.currentUser!.id,
             });

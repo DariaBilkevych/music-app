@@ -101,7 +101,7 @@ const SongsList = ({
           {isEditing && (
             <button
               className={`flex items-center px-2 py-1 border border-orange-400 rounded-full text-orange-400 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-300 mr-4`}
-              onClick={() => onDeleteSong(song.id)}
+              onClick={(event) => onDeleteSong(song.id, event)}
             >
               <i className="ri-subtract-line text-orange-400 font-bold"></i>
             </button>
