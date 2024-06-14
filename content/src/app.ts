@@ -9,6 +9,7 @@ import { updateContentRouter } from './routes/update';
 import { indexContentRouter } from './routes/index';
 import { showAllUserConentRouter } from './routes/show';
 import { showOneUserContentRouter } from './routes/show-one';
+import { showByGenreRouter } from './routes/show-by-genres';
 import { deleteContentRouter } from './routes/delete';
 import { deleteContentAdminRouter } from './routes/admin-delete';
 import { searchContentRouter } from './routes/search';
@@ -30,6 +31,7 @@ app.use(updateContentRouter);
 app.use(indexContentRouter);
 app.use(showAllUserConentRouter);
 app.use(showOneUserContentRouter);
+app.use(showByGenreRouter);
 app.use(deleteContentRouter);
 app.use(deleteContentAdminRouter);
 

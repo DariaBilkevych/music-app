@@ -44,6 +44,7 @@ const Signup = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             type="text"
+            required
             placeholder="Введіть ваше ім’я"
             className="ppearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-orange-500 focus:border-orange-500 focus:z-10 sm:text-sm"
           />

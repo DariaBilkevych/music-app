@@ -3,8 +3,14 @@ import { UserRoles } from '@dbmusicapp/common';
 
 export default ({ currentUser }) => {
   const links = [
+    !currentUser && { label: 'Бібліотека', href: '/content/genres' },
     !currentUser && { label: 'Реєстрація', href: '/auth/signup' },
     !currentUser && { label: 'Авторизація', href: '/auth/signin' },
+    currentUser &&
+      currentUser.role === UserRoles.User && {
+        label: 'Бібліотека',
+        href: '/content/genres',
+      },
     currentUser &&
       currentUser.role === UserRoles.User && {
         label: 'Мої плейлисти',

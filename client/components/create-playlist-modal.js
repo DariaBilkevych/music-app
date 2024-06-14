@@ -29,6 +29,7 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
       onCreate(newPlaylistTitle);
       setNewPlaylistTitle('');
       setError('');
+      toast.success('Плейлист успішно створено!');
     } catch (error) {
       console.error('Error creating playlist:', error);
     }

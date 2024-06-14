@@ -14,6 +14,13 @@ router.get(
     const period = parseInt(req.query.period as string, 10);
     const { startDate, endDate } = getStartEndDatesMonth(period);
 
+    const dateRange = [];
+    let currentDate = new Date(startDate);
+    while (currentDate <= endDate) {
+      dateRange.push(currentDate.toISOString().split('T')[0]);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
     const listeningStatsForAudio = await Listening.aggregate([
       {
         $match: {
@@ -49,10 +56,9 @@ router.get(
           _id: {
             title: '$audioFile.title',
             date: {
-              $dateToString: { format: '%d-%m-%Y', date: '$timestamps' },
+              $dateToString: { format: '%Y-%m-%d', date: '$timestamps' },
             },
           },
-          firstDate: { $min: '$timestamps' },
           playCount: { $sum: 1 },
         },
       },
@@ -72,9 +78,25 @@ router.get(
           _id: 0,
           title: '$_id',
           dates: {
-            $sortArray: {
-              input: '$dates',
-              sortBy: { date: 1 },
+            $map: {
+              input: dateRange,
+              as: 'date',
+              in: {
+                date: '$$date',
+                playCount: {
+                  $reduce: {
+                    input: '$dates',
+                    initialValue: 0,
+                    in: {
+                      $cond: [
+                        { $eq: ['$$this.date', '$$date'] },
+                        '$$this.playCount',
+                        '$$value',
+                      ],
+                    },
+                  },
+                },
+              },
             },
           },
         },

@@ -1,9 +1,10 @@
 import React from 'react';
 import UniversalChart from '../../components/admin-charts/universal-chart';
+import AdminListeningChart from '../../components/admin-charts/total-listening-chart';
 
 const DetailedStatistics = () => {
   return (
-    <div className="container overflow-y-auto h-[65vh] px-4 py-3 flex justify-center">
+    <div className="container overflow-y-auto h-[65vh] px-4 py-3 flex flex-col items-center">
       <div className="flex justify-between w-full">
         <div className="w-1/3 p-2">
           <UniversalChart
@@ -26,6 +27,9 @@ const DetailedStatistics = () => {
             labelsCallback={(item) => `${item.title} - ${item.artist}`}
           />
         </div>
+      </div>
+      <div className="w-1/2 mt-8 p-2">
+        <AdminListeningChart />
       </div>
     </div>
   );

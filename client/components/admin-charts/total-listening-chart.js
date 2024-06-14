@@ -7,7 +7,7 @@ const getCurrentMonth = () => {
   return new Date().getMonth() + 1;
 };
 
-const UserListeningChart = () => {
+const AdminListeningChart = () => {
   const [listeningData, setListeningData] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
 
@@ -17,56 +17,31 @@ const UserListeningChart = () => {
 
   const fetchListeningData = async () => {
     try {
-      const { data } = await axios.get('/api/statistics/listening-for-audios', {
-        params: {
-          period: selectedMonth,
-        },
-      });
+      const { data } = await axios.get(
+        '/api/statistics/admin/total-listening',
+        {
+          params: {
+            period: selectedMonth,
+          },
+        }
+      );
       setListeningData(data);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const getUniqueDates = (data) => {
-    const dates = new Set();
-    data.forEach((track) => {
-      track.dates.forEach((date) => dates.add(date.date));
-    });
-    return Array.from(dates).sort(
-      (a, b) =>
-        new Date(a.split('-').reverse().join('-')) -
-        new Date(b.split('-').reverse().join('-'))
-    );
-  };
-
-  const fillMissingDates = (dates, uniqueDates) => {
-    const filledDates = uniqueDates.map((date) => {
-      const foundDate = dates.find((d) => d.date === date);
-      return foundDate ? foundDate : { date, playCount: 0 };
-    });
-    return filledDates;
-  };
-
-  const uniqueDates = getUniqueDates(listeningData);
-  const filledListeningData = listeningData.map((track) => ({
-    title: track.title,
-    dates: fillMissingDates(track.dates, uniqueDates),
-  }));
-
   const chartData = {
-    labels: uniqueDates,
-    datasets: filledListeningData.map((track) => ({
-      label: track.title,
-      data: track.dates.map((date) => date.playCount),
-      fill: false,
-      backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-        Math.random() * 255
-      )}, ${Math.floor(Math.random() * 255)}, 0.4)`,
-      borderColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-        Math.random() * 255
-      )}, ${Math.floor(Math.random() * 255)}, 1)`,
-    })),
+    labels: listeningData.map((entry) => entry.date),
+    datasets: [
+      {
+        label: 'Кількість прослуховувань',
+        data: listeningData.map((entry) => entry.playCount),
+        fill: false,
+        backgroundColor: 'rgba(75, 192, 192, 0.4)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+      },
+    ],
   };
 
   const options = {
@@ -74,7 +49,7 @@ const UserListeningChart = () => {
       x: {
         title: {
           display: true,
-          text: 'Дата прослуховування',
+          text: 'Дата',
         },
       },
       y: {
@@ -86,14 +61,13 @@ const UserListeningChart = () => {
     },
     plugins: {
       legend: {
-        position: 'right',
+        position: 'top',
       },
       tooltip: {
         callbacks: {
           label: (context) => {
-            const title = context.dataset.label;
             const value = context.dataset.data[context.dataIndex];
-            return `${title} - ${value} прослуховувань`;
+            return `${value} прослуховувань`;
           },
         },
       },
@@ -104,7 +78,7 @@ const UserListeningChart = () => {
     <div className="mt-8 bg-white rounded-lg p-4 shadow-lg">
       <div className="mb-4">
         <h3 className="text-xl font-semibold text-center mb-2">
-          Графік прослуховувань власних треків
+          Загальна кількість прослуховувань за обраний місяць
         </h3>
         <select
           value={selectedMonth}
@@ -124,19 +98,13 @@ const UserListeningChart = () => {
           <option value={11}>Листопад</option>
           <option value={12}>Грудень</option>
         </select>
-        {chartData.datasets.length > 0 && (
-          <p className="text-center text-gray-600 text-sm p-3">
-            * На цьому графіку відображаються лише треки, що мають
-            прослуховування.
-          </p>
-        )}
-        {chartData.datasets.length > 0 ? (
+        {chartData.datasets[0].data.length > 0 ? (
           <div className="rounded-lg">
             <Line data={chartData} options={options} />
           </div>
         ) : (
           <p className="text-center text-gray-500">
-            На жаль, у вас ще немає прослуховувань жодного треку.
+            На жаль, немає даних для обраного місяця.
           </p>
         )}
       </div>
@@ -144,4 +112,4 @@ const UserListeningChart = () => {
   );
 };
 
-export default UserListeningChart;
+export default AdminListeningChart;

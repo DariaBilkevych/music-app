@@ -109,19 +109,23 @@ const Player = ({ isVisible, currentUser }) => {
       );
       setIsFavorite(false);
       toast.success('Успішно видалено з "Улюбене"');
-      setContent(content.filter((song) => song.id !== currentSong.id));
+      setContent((prevContent) =>
+        prevContent.filter((song) => song.id !== currentSong.id)
+      );
     } else {
       await axios.post(`/api/playlists/${favoritePlaylistId}/add-audio`, {
         audioFileId: currentSong.id,
       });
       setIsFavorite(true);
       toast.success('Успішно додано до "Улюбене"');
-      setContent([...content, currentSong]);
+      setContent((prevContent) => [...prevContent, currentSong]);
     }
   };
 
   useEffect(() => {
-    audioRef.current.volume = volume;
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
   }, [volume]);
 
   return (

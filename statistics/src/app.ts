@@ -13,6 +13,7 @@ import { adminStatsRouter } from './routes/admin/overal';
 import { adminTopArtistsRouter } from './routes/admin/top-artists';
 import { adminTopSongsRouter } from './routes/admin/top-songs';
 import { adminTopGenresRouter } from './routes/admin/top-genres';
+import { adminTotalListeningRouter } from './routes/admin/total-listening';
 import { getContentRouter } from './routes/admin/show-content';
 import { searchContentRouter } from './routes/admin/search-files';
 
@@ -38,6 +39,7 @@ app.use(adminStatsRouter);
 app.use(adminTopArtistsRouter);
 app.use(adminTopSongsRouter);
 app.use(adminTopGenresRouter);
+app.use(adminTotalListeningRouter);
 app.use(getContentRouter);
 
 app.all('*', async (req, res) => {

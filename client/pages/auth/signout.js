@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Router from 'next/router';
 import useRequest from '../../hooks/use-request';
+import Loader from '../../components/loader';
 
 export default () => {
   const { doRequest } = useRequest({
@@ -14,5 +15,5 @@ export default () => {
     doRequest();
   }, []);
 
-  return <div>Вихід з Вашого акаунту...</div>;
+  return <Loader />;
 };
